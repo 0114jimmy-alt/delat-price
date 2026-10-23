@@ -1,513 +1,719 @@
 <!DOCTYPE html>
-<html lang="zh">
+<html lang="zh-Hant">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>早餐店小游戏 · 60秒限时挑战</title>
-    <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            user-select: none;
-            font-family: 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
-        }
-        body {
-            min-height: 100vh;
-            background: linear-gradient(145deg, #f9e7b3 0%, #f5d99b 100%);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 1rem;
-            margin: 0;
-        }
-        .game-container {
-            max-width: 800px;
-            width: 100%;
-            background: #fffaec;
-            border-radius: 48px;
-            box-shadow: 0 20px 30px rgba(0, 0, 0, 0.2), 0 6px 0 #d9b880 inset, 0 -6px 0 #bfa06b inset;
-            padding: 1.5rem 1.8rem 2rem;
-            border: 3px solid #b38b5b;
-        }
-        .top-bar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: #faeac6;
-            border-radius: 60px;
-            padding: 0.7rem 1.5rem;
-            margin-bottom: 1.5rem;
-            box-shadow: 0 4px 0 #b38b5b, 0 6px 12px rgba(0,0,0,0.1);
-            border: 2px solid #c9a76b;
-        }
-        .money, .timer {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-weight: 800;
-            font-size: 1.5rem;
-            background: #fff4dc;
-            padding: 0.3rem 1.4rem;
-            border-radius: 40px;
-            box-shadow: 0 4px 0 #ad8b58 inset, 0 2px 6px rgba(0,0,0,0.1);
-            color: #4d2e1b;
-        }
-        .money span, .timer span {
-            font-size: 2rem;
-            margin-right: 4px;
-        }
-        .timer {
-            background: #ffe6b3;
-        }
-        .timer.warning {
-            background: #ffb3b3;
-            color: #a10000;
-            animation: pulse 1s infinite;
-        }
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.02); }
-            100% { transform: scale(1); }
-        }
-        .customers-area {
-            background: #efdbb8;
-            border-radius: 30px;
-            padding: 1.2rem 1rem;
-            margin-bottom: 1.2rem;
-            box-shadow: 0 6px 0 #ac8b5c inset, 0 10px 15px rgba(0,0,0,0.1);
-            border: 2px solid #c8a56b;
-        }
-        .customer-queue {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            align-items: flex-end;
-            gap: 1.2rem;
-            min-height: 160px;
-        }
-        .customer-card {
-            background: #ffeac2;
-            border-radius: 30px 30px 20px 20px;
-            padding: 0.7rem 1rem 1rem;
-            width: 110px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            box-shadow: 0 8px 0 #b48b4b, 0 10px 18px rgba(0,0,0,0.15);
-            border: 2px solid #dbb87c;
-            transition: all 0.15s;
-        }
-        .customer-face {
-            font-size: 3.5rem;
-            line-height: 1;
-            filter: drop-shadow(0 4px 2px rgba(0,0,0,0.15));
-            margin-bottom: 4px;
-        }
-        .order-badge {
-            background: #fff6e0;
-            border-radius: 50px;
-            padding: 0.3rem 0.6rem;
-            font-size: 1.4rem;
-            font-weight: 700;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 2px;
-            box-shadow: 0 2px 0 #ad8b58 inset;
-            width: 100%;
-            color: #3b2a1a;
-        }
-        .order-badge span {
-            font-size: 1.4rem;
-            margin: 0 1px;
-        }
-        .empty-queue {
-            color: #7f613b;
-            font-size: 1.3rem;
-            font-weight: 600;
-            text-align: center;
-            width: 100%;
-            padding: 2rem 0;
-            opacity: 0.8;
-        }
-        .menu-area {
-            display: flex;
-            justify-content: center;
-            gap: 1rem;
-            flex-wrap: wrap;
-            margin: 1.5rem 0 1rem;
-        }
-        .food-btn {
-            background: #ffeac2;
-            border: none;
-            border-radius: 40px;
-            padding: 1rem 1.2rem;
-            font-size: 2.6rem;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 6px;
-            box-shadow: 0 8px 0 #b48b4b, 0 8px 16px rgba(0,0,0,0.2);
-            transition: all 0.08s ease;
-            cursor: pointer;
-            border: 2px solid #dbb87c;
-            flex: 0 1 110px;
-            color: #3b2a1a;
-            font-weight: 700;
-        }
-        .food-btn:active {
-            transform: translateY(5px);
-            box-shadow: 0 3px 0 #b48b4b, 0 8px 16px rgba(0,0,0,0.1);
-        }
-        .food-btn .food-label {
-            font-size: 1rem;
-            background: #f5e0b7;
-            padding: 0.2rem 0.8rem;
-            border-radius: 40px;
-            width: 100%;
-            text-align: center;
-            box-shadow: 0 2px 0 #b48b4b inset;
-            color: #4d2e1b;
-        }
-        .message-area {
-            min-height: 2.8rem;
-            font-size: 1.2rem;
-            font-weight: 700;
-            text-align: center;
-            padding: 0.5rem;
-            border-radius: 30px;
-            background: #faeac6;
-            box-shadow: 0 2px 0 #b48b4b inset;
-            margin-top: 0.8rem;
-            color: #664d33;
-        }
-        .reset-btn {
-            background: #b48b4b;
-            border: none;
-            color: #fff8e7;
-            font-weight: 800;
-            font-size: 1.2rem;
-            padding: 0.8rem 2rem;
-            border-radius: 60px;
-            display: block;
-            margin: 1rem auto 0;
-            box-shadow: 0 6px 0 #6b4f2b, 0 6px 12px rgba(0,0,0,0.2);
-            cursor: pointer;
-            transition: 0.08s;
-            border: 2px solid #dbb87c;
-            letter-spacing: 1px;
-        }
-        .reset-btn:active {
-            transform: translateY(5px);
-            box-shadow: 0 1px 0 #6b4f2b, 0 6px 12px rgba(0,0,0,0.1);
-        }
-        .disabled-click {
-            pointer-events: none;
-            opacity: 0.6;
-            filter: grayscale(0.5);
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>早餐店大忙人 · 超能小店</title>
+  <style>
+    :root {
+      --ink: #2f2419;
+      --cream: #fff9ef;
+      --tan: #f5e4c1;
+      --brown: #7b5e3f;
+      --gold: #c9a258;
+      --green: #3e7b4b;
+      --red: #c0392b;
+      --shadow: 0 8px 0 #b78d58, 0 18px 30px rgba(75, 45, 20, 0.25);
+    }
+    * { box-sizing: border-box; margin: 0; }
+    body {
+      min-height: 100vh;
+      padding: 16px;
+      background: linear-gradient(145deg, #fbefcf, #f2d9a8);
+      font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+      color: var(--ink);
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+    }
+    .game {
+      max-width: 1000px;
+      width: 100%;
+      background: #fff9ed;
+      border: 3px solid #b98f5a;
+      border-radius: 32px;
+      padding: 20px 18px;
+      box-shadow: var(--shadow);
+    }
+    /* HEADER */
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+      background: #f8edda;
+      padding: 14px 18px;
+      border-radius: 22px;
+      margin-bottom: 16px;
+      border: 1px solid #dcbe92;
+    }
+    h1 {
+      font-size: clamp(1.4rem, 4vw, 2rem);
+      letter-spacing: -0.5px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .stats {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .stat {
+      background: #fffcf3;
+      border-radius: 30px;
+      padding: 8px 16px;
+      font-weight: 700;
+      font-size: 1.1rem;
+      box-shadow: inset 0 0 0 1px #e6d3b6;
+    }
+    .stat span {
+      font-size: 1.3rem;
+      color: #9b5e2e;
+    }
+    /* 區塊通用 */
+    .section {
+      background: #f5e7d0;
+      border-radius: 22px;
+      padding: 16px;
+      margin-bottom: 16px;
+      border: 2px solid #e3c9a4;
+      box-shadow: inset 0 1px 4px rgba(255, 255, 255, 0.8);
+    }
+    .section h2 {
+      font-size: 1.15rem;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 14px;
+      font-weight: 800;
+      color: #4b3824;
+    }
+    /* 排隊區 */
+    .queue {
+      display: flex;
+      gap: 12px;
+      overflow-x: auto;
+      padding: 6px 4px 16px;
+      min-height: 170px;
+      scrollbar-width: thin;
+    }
+    .customer {
+      flex: 0 0 130px;
+      background: #fffaee;
+      border: 2px solid #dab27c;
+      border-radius: 24px;
+      padding: 12px 8px;
+      text-align: center;
+      box-shadow: 0 5px 0 #ba9a6b;
+      transition: transform 0.1s ease;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .customer.urgent {
+      border-color: #c0392b;
+      background: #ffeeea;
+    }
+    .face {
+      font-size: 3rem;
+      line-height: 1.2;
+      filter: drop-shadow(0 3px 2px rgba(0,0,0,0.1));
+    }
+    .order {
+      font-weight: 800;
+      font-size: 1rem;
+      background: #f3e2c8;
+      padding: 4px 12px;
+      border-radius: 30px;
+      margin: 6px 0;
+      display: inline-block;
+    }
+    .patience {
+      height: 10px;
+      background: #e8d8c2;
+      border-radius: 12px;
+      overflow: hidden;
+      width: 100%;
+      margin: 6px 0 4px;
+    }
+    .patience > i {
+      display: block;
+      height: 100%;
+      background: #4e9d5a;
+      width: 100%;
+      transition: width 0.2s;
+      border-radius: 12px;
+    }
+    .patience.low > i { background: #d44c3a; }
+    .seconds {
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: #795d3d;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .empty {
+      width: 100%;
+      text-align: center;
+      padding: 40px 12px;
+      font-size: 1.1rem;
+      color: #9b8569;
+      font-weight: 500;
+    }
+    /* 廚房 */
+    .kitchen {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 14px;
+    }
+    .station {
+      background: #fff6e6;
+      border-radius: 20px;
+      padding: 14px 12px;
+      border: 2px solid #dbbd8b;
+      box-shadow: 0 4px 0 #c3a06c;
+    }
+    .station h3 {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 1.1rem;
+      margin-bottom: 8px;
+    }
+    .desc {
+      font-size: 0.8rem;
+      color: #7a5d3e;
+      background: #efe1cd;
+      border-radius: 14px;
+      padding: 4px 10px;
+      display: inline-block;
+      margin-bottom: 12px;
+    }
+    .cook-btn {
+      width: 100%;
+      border: none;
+      border-radius: 16px;
+      background: #a07445;
+      color: white;
+      font-weight: 800;
+      font-size: 1rem;
+      padding: 12px 8px;
+      box-shadow: 0 5px 0 #644a2e;
+      transition: 0.05s linear;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+    .cook-btn:active:not(:disabled) {
+      transform: translateY(3px);
+      box-shadow: 0 2px 0 #644a2e;
+    }
+    .cook-btn:disabled {
+      opacity: 0.5;
+      box-shadow: 0 3px 0 #8e6d49;
+      cursor: not-allowed;
+      transform: none;
+    }
+    .slots {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      min-height: 58px;
+      margin-top: 6px;
+    }
+    .slot {
+      flex: 1 1 70px;
+      border-radius: 16px;
+      background: #fcf5e8;
+      border: 1px solid #dbbd8b;
+      padding: 8px 4px;
+      text-align: center;
+      font-size: 0.8rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      transition: 0.1s;
+    }
+    .slot .icon { font-size: 1.6rem; line-height: 1; }
+    .slot.cooking { background: #f9e9c8; border-color: #c9a25e; }
+    .slot.ready { background: #dff0d8; border-color: #7db87a; }
+    .slot.burnt { background: #2f2a25; color: #ddd; border-color: #1e1a17; }
+    .slot.burnt .icon { filter: grayscale(1); }
+    .slot button {
+      border: none;
+      border-radius: 20px;
+      padding: 6px 10px;
+      font-weight: 700;
+      font-size: 0.75rem;
+      background: #4e8155;
+      color: white;
+      cursor: pointer;
+      box-shadow: 0 3px 0 #2f5335;
+      width: 100%;
+      transition: 0.05s linear;
+    }
+    .slot button:active:not(:disabled) {
+      transform: translateY(2px);
+      box-shadow: 0 1px 0 #2f5335;
+    }
+    .slot.burnt button { background: #b84334; box-shadow: 0 3px 0 #752b20; }
+    .slot button:disabled {
+      opacity: 0.5;
+      box-shadow: 0 2px 0 #2f5335;
+      transform: none;
+      cursor: not-allowed;
+    }
+    .count-badge {
+      font-size: 0.75rem;
+      background: #dac29b;
+      color: #3d2b18;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 30px;
+      display: inline-block;
+      margin-left: 6px;
+    }
+    .message {
+      min-height: 56px;
+      background: #f6e9d6;
+      border-radius: 30px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 1.05rem;
+      text-align: center;
+      padding: 12px 20px;
+      margin: 18px 0 12px;
+      border: 1px dashed #c9ac7a;
+      transition: 0.2s;
+      color: #3e7b4b;
+    }
+    .bottom {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+    .hint {
+      font-size: 0.9rem;
+      line-height: 1.6;
+      color: #6d5436;
+      max-width: 650px;
+      background: #f3e8d8;
+      padding: 8px 16px;
+      border-radius: 40px;
+    }
+    .reset {
+      background: #517a58;
+      border: none;
+      border-radius: 40px;
+      color: white;
+      font-weight: 800;
+      font-size: 1.1rem;
+      padding: 14px 28px;
+      box-shadow: 0 5px 0 #2d4a32;
+      cursor: pointer;
+      transition: 0.05s linear;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      white-space: nowrap;
+    }
+    .reset:active {
+      transform: translateY(3px);
+      box-shadow: 0 2px 0 #2d4a32;
+    }
+    @media (max-width: 600px) {
+      body { padding: 8px; }
+      .game { padding: 12px; border-radius: 24px; }
+      .kitchen { gap: 8px; }
+      .station { padding: 10px 8px; }
+      .customer { flex-basis: 112px; }
+      .slot { flex: 1 1 60px; }
+      .cook-btn { font-size: 0.9rem; padding: 10px 4px; }
+      .reset { padding: 12px 18px; font-size: 1rem; }
+    }
+    @media (max-width: 400px) {
+      .kitchen { grid-template-columns: 1fr; }
+      .queue { gap: 8px; }
+    }
+  </style>
 </head>
 <body>
-<div class="game-container" id="gameContainer">
-    <!-- 頂部狀態 -->
-    <div class="top-bar">
-        <div class="money">💰 <span id="moneyDisplay">0</span></div>
-        <div class="timer" id="timerBox">⏰ <span id="timerDisplay">60</span>s</div>
+<main class="game">
+  <header>
+    <h1>🍳 早餐店大忙人 · 超能小店</h1>
+    <div class="stats">
+      <div class="stat">💰 <span id="money">0</span> 元</div>
+      <div class="stat">⏰ <span id="gameTime">120</span>s</div>
+      <div class="stat">😊 服務 <span id="served">0</span> 位</div>
     </div>
+  </header>
 
-    <!-- 客人佇列 -->
-    <div class="customers-area">
-        <div class="customer-queue" id="customerQueue">
-            <!-- 隨機客人會動態產生 -->
-            <div class="empty-queue">等待客人上門...</div>
-        </div>
+  <!-- 客人等候區 -->
+  <section class="section">
+    <h2>🧍 等候區 <span style="font-weight:400;font-size:0.9rem;margin-left:auto;">(耐心歸零會離開)</span></h2>
+    <div class="queue" id="queue">
+      <div class="empty">🌅 準備開店中……</div>
     </div>
+  </section>
 
-    <!-- 餐點按鈕 -->
-    <div class="menu-area" id="menuArea">
-        <button class="food-btn" data-food="toast">🍞<span class="food-label">烤吐司</span></button>
-        <button class="food-btn" data-food="pancake">🥞<span class="food-label">蛋餅</span></button>
-        <button class="food-btn" data-food="soymilk">🥛<span class="food-label">豆漿</span></button>
-        <button class="food-btn" data-food="milktea">🧋<span class="food-label">奶茶</span></button>
+  <!-- 廚房 -->
+  <section class="section">
+    <h2>👨‍🍳 廚房 <span style="font-weight:400;font-size:0.9rem;margin-left:auto;">每種最多 4 份｜吐司/蛋餅會烤焦</span></h2>
+    <div class="kitchen" id="kitchen"></div>
+  </section>
+
+  <div class="message" id="message" role="status">👋 點擊「開始料理」製作餐點，再送給最前面的客人！</div>
+
+  <div class="bottom">
+    <div class="hint">
+      🥪 烤吐司 5秒 · 7秒後烤焦｜🥞 蛋餅 6秒 · 8秒後烤焦<br>
+      🥛 豆漿 4秒 (不會焦)｜🧋 奶茶 5秒 (不會焦) · 每種餐點最多同時4份
     </div>
-
-    <!-- 提示訊息 -->
-    <div class="message-area" id="messageArea">點選餐點完成訂單！</div>
-
-    <!-- 重玩按鈕 -->
-    <button class="reset-btn" id="resetBtn">重新開店</button>
-</div>
+    <button class="reset" id="reset">🔄 重新開店</button>
+  </div>
+</main>
 
 <script>
-    (function() {
-        // ---------- 遊戲設定 ----------
-        const FOODS = [
-            { key: 'toast', name: '烤吐司', emoji: '🍞' },
-            { key: 'pancake', name: '蛋餅', emoji: '🥞' },
-            { key: 'soymilk', name: '豆漿', emoji: '🥛' },
-            { key: 'milktea', name: '奶茶', emoji: '🧋' }
-        ];
+  (() => {
+    // ---------- 餐點定義 ----------
+    const FOODS = [
+      { key: 'toast',   name: '烤吐司', emoji: '🍞', cook: 5, burn: 7,  price: 30, grill: true  },
+      { key: 'pancake', name: '蛋餅',   emoji: '🥞', cook: 6, burn: 8,  price: 35, grill: true  },
+      { key: 'soymilk', name: '豆漿',   emoji: '🥛', cook: 4, burn: 0,  price: 20, grill: false },
+      { key: 'milktea', name: '奶茶',   emoji: '🧋', cook: 5, burn: 0,  price: 25, grill: false }
+    ];
+    const FACES = ['👩','👨','👧','👦','👵','👴','🧑','👩‍🦰','👨‍🦱','👱‍♀️','🧔','👩‍🦳','👩‍🦱','🧓'];
+    const MAX_ITEMS_PER_FOOD = 4;        // 每種餐點最多4份
+    const CUSTOMER_PATIENCE = 35;        // 每位客人耐心35秒
+    const SPAWN_INTERVAL_MS = 6800;      // 間隔生成客人
+    const GAME_DURATION = 120;           // 遊戲時間120秒
 
-        // 客人表情
-        const FACES = ['👩', '👨', '👧', '👦', '👵', '👴', '🧑', '👩‍🦰', '👨‍🦱', '👱‍♀️', '👩‍🦳', '🧔'];
+    // ---------- 遊戲狀態 ----------
+    let money = 0;
+    let served = 0;
+    let gameTime = GAME_DURATION;
+    let active = false;
+    let customers = [];        // { id, face, order, left, patience }
+    let items = [];            // { id, food, state, readyAt, burnAt }
+    let nextId = 1;
+    let gameTimer = null;
+    let spawnTimer = null;
+    let lastMessageTimer = null;
 
-        // 遊戲狀態
-        let money = 0;
-        let timeLeft = 60;              // 秒
-        let timerInterval = null;
-        let gameActive = false;         // 是否進行中
-        let customers = [];             // 客人陣列 { id, face, order (food key) }
+    // DOM 元素
+    const $ = id => document.getElementById(id);
+    const queueEl = $('queue');
+    const kitchenEl = $('kitchen');
+    const messageEl = $('message');
+    const moneySpan = $('money');
+    const servedSpan = $('served');
+    const timeSpan = $('gameTime');
 
-        // 控制客人產生的計時器
-        let spawnInterval = null;
+    // ---------- 輔助函數 ----------
+    function food(key) { return FOODS.find(f => f.key === key); }
 
-        // 下一個客人id
-        let nextCustomerId = 1;
+    function inventoryCount(key) {
+      return items.filter(x => x.food === key).length;
+    }
 
-        // DOM 元素
-        const moneyDisplay = document.getElementById('moneyDisplay');
-        const timerDisplay = document.getElementById('timerDisplay');
-        const timerBox = document.getElementById('timerBox');
-        const customerQueue = document.getElementById('customerQueue');
-        const messageArea = document.getElementById('messageArea');
-        const resetBtn = document.getElementById('resetBtn');
-        const foodBtns = document.querySelectorAll('.food-btn');
+    // 顯示訊息，自動在 3 秒後恢復預設提示 (可選)
+    function say(msg, isBad = false) {
+      messageEl.textContent = msg;
+      messageEl.style.color = isBad ? '#b84334' : '#3e7b4b';
+      messageEl.style.background = isBad ? '#ffeeea' : '#f6e9d6';
+      if (lastMessageTimer) clearTimeout(lastMessageTimer);
+      lastMessageTimer = setTimeout(() => {
+        if (!active) return;
+        messageEl.textContent = '👋 繼續努力！送出正確餐點賺錢～';
+        messageEl.style.color = '#3e7b4b';
+        messageEl.style.background = '#f6e9d6';
+      }, 2800);
+    }
 
-        // ---------- 輔助函式 ----------
-        // 隨機從陣列取一個
-        function randomItem(arr) {
-            return arr[Math.floor(Math.random() * arr.length)];
-        }
+    // ---------- 渲染排隊區 ----------
+    function renderQueue() {
+      if (!customers.length) {
+        queueEl.innerHTML = '<div class="empty">🌙 目前沒有客人，稍等一下…</div>';
+        return;
+      }
+      queueEl.innerHTML = customers.map((c, idx) => {
+        const f = food(c.order);
+        const pct = Math.max(0, (c.left / c.patience) * 100);
+        const isUrgent = pct < 25;
+        const isFirst = idx === 0;
+        return `
+          <div class="customer ${isUrgent ? 'urgent' : ''}">
+            <div class="face">${c.face}</div>
+            <div class="order">${f.emoji} ${f.name}</div>
+            <div class="patience ${pct < 30 ? 'low' : ''}">
+              <i style="width:${pct}%"></i>
+            </div>
+            <div class="seconds">⏳ ${Math.max(0, Math.ceil(c.left))} 秒</div>
+            <div class="seconds" style="font-weight:800;color:${isFirst ? '#c4722c' : '#795d3d'};">
+              ${isFirst ? '👈 優先' : `第 ${idx+1} 位`}
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
 
-        // 更新金錢顯示
-        function updateMoneyDisplay() {
-            moneyDisplay.textContent = money;
-        }
+    // ---------- 渲染廚房 ----------
+    function renderKitchen() {
+      kitchenEl.innerHTML = FOODS.map(f => {
+        const list = items.filter(x => x.food === f.key);
+        const canCook = active && list.length < MAX_ITEMS_PER_FOOD;
+        const count = list.length;
 
-        // 更新計時器顯示
-        function updateTimerDisplay() {
-            timerDisplay.textContent = timeLeft;
-            if (timeLeft <= 10) {
-                timerBox.classList.add('warning');
-            } else {
-                timerBox.classList.remove('warning');
-            }
-        }
-
-        // 顯示短暫訊息 (幾秒後恢復預設)
-        function setMessage(text, isGood = true, duration = 1500) {
-            messageArea.textContent = text;
-            messageArea.style.color = isGood ? '#2b5e1e' : '#a12b2b';
-            if (duration > 0) {
-                clearTimeout(messageArea.msgTimeout);
-                messageArea.msgTimeout = setTimeout(() => {
-                    if (gameActive) {
-                        messageArea.textContent = '點選餐點完成訂單！';
-                        messageArea.style.color = '#664d33';
-                    }
-                }, duration);
-            }
-        }
-
-        // ---------- 渲染客人佇列 ----------
-        function renderCustomers() {
-            if (!customerQueue) return;
-
-            if (customers.length === 0) {
-                customerQueue.innerHTML = '<div class="empty-queue">等待客人上門...</div>';
-                return;
-            }
-
-            let html = '';
-            customers.forEach(cust => {
-                // 找出餐點對應的emoji
-                const foodItem = FOODS.find(f => f.key === cust.order);
-                const foodEmoji = foodItem ? foodItem.emoji : '❓';
-
-                html += `
-                    <div class="customer-card" data-customer-id="${cust.id}">
-                        <div class="customer-face">${cust.face}</div>
-                        <div class="order-badge"><span>${foodEmoji}</span></div>
-                    </div>
-                `;
-            });
-            customerQueue.innerHTML = html;
-        }
-
-        // ---------- 新增客人 (隨機) ----------
-        function spawnCustomer() {
-            if (!gameActive) return;          // 遊戲結束就不生成
-            // 避免太多客人，佇列上限 5 位
-            if (customers.length >= 5) return;
-
-            // 隨機選擇餐點
-            const randomFood = randomItem(FOODS);
-            const randomFace = randomItem(FACES);
-
-            const newCustomer = {
-                id: nextCustomerId++,
-                face: randomFace,
-                order: randomFood.key,
-            };
-
-            customers.push(newCustomer);
-            renderCustomers();
-        }
-
-        // ---------- 開始遊戲 (重置並啟動) ----------
-        function startGame() {
-            // 停止所有計時器
-            if (timerInterval) clearInterval(timerInterval);
-            if (spawnInterval) clearInterval(spawnInterval);
-
-            // 重置狀態
-            gameActive = true;
-            money = 0;
-            timeLeft = 60;
-            customers = [];
-            nextCustomerId = 1;
-            updateMoneyDisplay();
-            updateTimerDisplay();
-            timerBox.classList.remove('warning');
-            messageArea.textContent = '點選餐點完成訂單！';
-            messageArea.style.color = '#664d33';
-
-            // 清空佇列並渲染
-            renderCustomers();
-
-            // 立刻產生第一位客人（讓遊戲不至於空等）
-            spawnCustomer();
-            // 每隔 2.2 秒產生一位新客人 (不要太密集)
-            spawnInterval = setInterval(() => {
-                spawnCustomer();
-            }, 2200);
-
-            // 倒數計時器
-            timerInterval = setInterval(() => {
-                if (!gameActive) return;   // 如果遊戲已結束，不再倒數
-
-                timeLeft -= 1;
-                updateTimerDisplay();
-
-                // 時間到，結束遊戲
-                if (timeLeft <= 0) {
-                    timeLeft = 0;
-                    updateTimerDisplay();
-                    endGame('時間到！');
-                }
-            }, 1000);
-        }
-
-        // ---------- 結束遊戲 ----------
-        function endGame(reason = '時間到！') {
-            if (!gameActive) return;   // 避免重複觸發
-
-            gameActive = false;
-            if (timerInterval) {
-                clearInterval(timerInterval);
-                timerInterval = null;
-            }
-            if (spawnInterval) {
-                clearInterval(spawnInterval);
-                spawnInterval = null;
-            }
-
-            // 標記最後訊息
-            messageArea.textContent = `${reason} 最終金額：💰${money}`;
-            messageArea.style.color = '#a12b2b';
-
-            // 把所有客人卡片加個灰階? (視覺上沒差，但可以保留)
-            // 按鈕不能按 (css 處理，但用 pointer-events 更好)
-            // 直接將按鈕禁用? 我們用遊戲狀態控制 click 即可
-        }
-
-        // ---------- 處理出餐 (點擊餐點) ----------
-        function handleFoodClick(foodKey) {
-            if (!gameActive) {
-                // 遊戲未開始或已結束，不能出餐
-                return;
-            }
-
-            // 如果沒有客人
-            if (customers.length === 0) {
-                // 沒有客人時出餐 = 浪費? 小扣款? 這裡設計為口頭警告但不扣錢 (比較簡單)
-                setMessage('沒有客人喔！', false, 1000);
-                return;
-            }
-
-            // 找第一位客人 (排隊最前面的)
-            const firstCustomer = customers[0];
-            const orderedFood = firstCustomer.order;
-            const orderedItem = FOODS.find(f => f.key === orderedFood);
-            const orderedName = orderedItem ? orderedItem.name : orderedFood;
-
-            if (foodKey === orderedFood) {
-                // 正確出餐
-                // 賺錢 (每單 +20 元)
-                money += 20;
-                updateMoneyDisplay();
-                // 移除第一位客人
-                customers.shift();
-                renderCustomers();
-                // 提示成功
-                setMessage(`✅ 正確！${orderedName}  +20元`, true, 800);
-                // 如果客人空閒，可以加一點小獎勵? 不用
-            } else {
-                // 錯誤出餐 -> 扣款 10 元，但金額不會低於 0 (避免負數比較友善)
-                const penalty = 10;
-                money = Math.max(0, money - penalty);
-                updateMoneyDisplay();
-                // 扣款提示
-                setMessage(`❌ 弄錯了！客人要的是 ${orderedName}  (-10元)`, false, 1200);
-                // 錯誤時不移除客人，客人會繼續等
-            }
-        }
-
-        // ---------- 事件綁定 ----------
-        function bindEvents() {
-            // 餐點按鈕
-            foodBtns.forEach(btn => {
-                btn.addEventListener('click', (e) => {
-                    const foodKey = btn.dataset.food;
-                    handleFoodClick(foodKey);
-                });
-            });
-
-            // 重置按鈕
-            resetBtn.addEventListener('click', () => {
-                // 停止所有計時器
-                if (timerInterval) clearInterval(timerInterval);
-                if (spawnInterval) clearInterval(spawnInterval);
-                // 重新開始
-                startGame();
-            });
-
-            // 避免雙擊按鈕時選取文字
-            foodBtns.forEach(btn => {
-                btn.addEventListener('mousedown', (e) => e.preventDefault());
-            });
-        }
-
-        // ---------- 初始化 (頁面載入時啟動) ----------
-        function init() {
-            bindEvents();
-            // 直接開始遊戲
-            startGame();
-        }
-
-        // 頁面載入完成後執行
-        window.addEventListener('DOMContentLoaded', init);
-
-        // 如果腳本在DOM之後執行，也確保啟動
-        if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', init);
+        // 生成 slots
+        let slotsHtml = '';
+        if (list.length === 0) {
+          slotsHtml = `<div class="slot" style="opacity:0.7;"><span class="icon">➕</span>閒置</div>`;
         } else {
-            init();
+          slotsHtml = list.map(x => {
+            const remainingSec = Math.max(0, Math.ceil((x.readyAt - Date.now()) / 1000));
+            if (x.state === 'cooking') {
+              return `<div class="slot cooking">
+                <span class="icon">⏳</span>
+                <span>料理中</span>
+                <span style="font-weight:800;">${remainingSec}秒</span>
+              </div>`;
+            }
+            if (x.state === 'burnt') {
+              return `<div class="slot burnt">
+                <span class="icon">⬛</span>
+                <span>烤焦了</span>
+                <button data-trash="${x.id}" style="background:#b84334;">🗑️ 丟棄</button>
+              </div>`;
+            }
+            // ready
+            let burnInfo = '';
+            if (f.grill && x.burnAt) {
+              const burnLeft = Math.max(0, Math.ceil((x.burnAt - Date.now()) / 1000));
+              burnInfo = `<small style="color:#b84334;">🔥 ${burnLeft}秒後焦</small>`;
+            }
+            return `<div class="slot ready">
+              <span class="icon">${f.grill ? '🟡' : '✨'}</span>
+              <span>完成</span>
+              ${burnInfo}
+              <button data-deliver="${x.id}" ${(!active || !customers.length) ? 'disabled' : ''}>🍽️ 送餐</button>
+            </div>`;
+          }).join('');
         }
 
-    })();
+        return `
+          <article class="station">
+            <h3>${f.emoji} ${f.name} <span class="count-badge">${count}/${MAX_ITEMS_PER_FOOD}</span></h3>
+            <div class="desc">⏱️ ${f.cook}秒${f.grill ? ` · 焦掉倒數${f.burn}秒` : ' · 不會焦'} · 💰$${f.price}</div>
+            <button class="cook-btn" data-cook="${f.key}" ${!canCook ? 'disabled' : ''}>
+              ${canCook ? '➕ 開始料理' : (count >= MAX_ITEMS_PER_FOOD ? '已滿' : '⏸️ 未營業')}
+            </button>
+            <div class="slots">${slotsHtml}</div>
+          </article>
+        `;
+      }).join('');
+    }
+
+    // ---------- 更新數值 ----------
+    function updateStats() {
+      moneySpan.textContent = money;
+      servedSpan.textContent = served;
+      timeSpan.textContent = Math.ceil(gameTime);
+    }
+
+    // ---------- 生成新客人 ----------
+    function spawnCustomer() {
+      if (!active || customers.length >= 5) return;
+      const randomFood = FOODS[Math.floor(Math.random() * FOODS.length)];
+      const randomFace = FACES[Math.floor(Math.random() * FACES.length)];
+      customers.push({
+        id: nextId++,
+        face: randomFace,
+        order: randomFood.key,
+        patience: CUSTOMER_PATIENCE,
+        left: CUSTOMER_PATIENCE
+      });
+      renderQueue();
+      renderKitchen();
+    }
+
+    // ---------- 開始料理 ----------
+    function cook(key) {
+      if (!active) { say('尚未開店！請點擊重新開店。', true); return; }
+      const f = food(key);
+      if (inventoryCount(key) >= MAX_ITEMS_PER_FOOD) {
+        say(`${f.name}最多只能備${MAX_ITEMS_PER_FOOD}份！`, true);
+        return;
+      }
+      const now = Date.now();
+      items.push({
+        id: nextId++,
+        food: key,
+        state: 'cooking',
+        readyAt: now + f.cook * 1000,
+        burnAt: 0
+      });
+      say(`開始料理 ${f.name}！可同時準備其他餐點。`);
+      renderKitchen();
+    }
+
+    // ---------- 送餐 ----------
+    function deliver(id) {
+      if (!active) return;
+      const item = items.find(x => x.id === id);
+      const currentCustomer = customers[0];
+      if (!item || !currentCustomer) {
+        if (!customers.length) say('沒有客人需要這份餐點～', true);
+        return;
+      }
+      if (item.state === 'cooking') { say('還沒做好呢，再等等！', true); return; }
+      if (item.state === 'burnt') { say('烤焦了不能出餐，請丟掉。', true); return; }
+      if (item.food !== currentCustomer.order) {
+        say(`最前面的客人要 ${food(currentCustomer.order).name}，這份是 ${food(item.food).name}。`, true);
+        return;
+      }
+      // 成功
+      const f = food(item.food);
+      items = items.filter(x => x.id !== id);
+      customers.shift();
+      money += f.price;
+      served++;
+      updateStats();
+      say(`✅ 送出 ${f.name}！+$${f.price} 元。`);
+      renderQueue();
+      renderKitchen();
+
+      // 若客人空了，立刻生成一個
+      if (customers.length === 0) spawnCustomer();
+    }
+
+    // ---------- 丟棄烤焦 ----------
+    function trashItem(id) {
+      items = items.filter(x => x.id !== id);
+      renderKitchen();
+      say('已丟掉烤焦的餐點。', true);
+    }
+
+    // ---------- 遊戲結束 ----------
+    function endGame() {
+      active = false;
+      if (gameTimer) clearInterval(gameTimer);
+      if (spawnTimer) clearInterval(spawnTimer);
+      gameTimer = null; spawnTimer = null;
+      say(`🔔 打烊！總收入 $${money}，共服務 ${served} 位客人。`, false);
+      renderKitchen();
+      renderQueue();
+    }
+
+    // ---------- 每 250ms 更新 ----------
+    function tick() {
+      if (!active) return;
+      const now = Date.now();
+
+      // 更新餐點狀態
+      items.forEach(item => {
+        if (item.state === 'cooking' && now >= item.readyAt) {
+          item.state = 'ready';
+          const f = food(item.food);
+          if (f.grill) {
+            item.burnAt = item.readyAt + f.burn * 1000;
+          }
+          say(`${f.name} 做好了！${f.grill ? '🔥 快點送出，不然會烤焦！' : '可以放著備用。'}`);
+        }
+        if (item.state === 'ready' && item.burnAt && now >= item.burnAt) {
+          item.state = 'burnt';
+          say(`${food(item.food).name} 烤焦了！請丟棄。`, true);
+        }
+      });
+
+      // 減少客人耐心
+      customers.forEach(c => { c.left -= 0.25; });
+
+      // 客人離開 (耐心歸零)
+      const leaving = customers.filter(c => c.left <= 0);
+      if (leaving.length > 0) {
+        customers = customers.filter(c => c.left > 0);
+        say(`😣 有 ${leaving.length} 位客人等太久離開了…`, true);
+      }
+
+      // 時間流逝
+      gameTime = Math.max(0, gameTime - 0.25);
+      updateStats();
+
+      // 重新渲染
+      renderQueue();
+      renderKitchen();
+
+      // 遊戲結束
+      if (gameTime <= 0) {
+        endGame();
+      }
+    }
+
+    // ---------- 開始 / 重置 ----------
+    function startGame() {
+      // 清除舊計時器
+      if (gameTimer) clearInterval(gameTimer);
+      if (spawnTimer) clearInterval(spawnTimer);
+      if (lastMessageTimer) clearTimeout(lastMessageTimer);
+      gameTimer = null; spawnTimer = null; lastMessageTimer = null;
+
+      // 重置狀態
+      money = 0;
+      served = 0;
+      gameTime = GAME_DURATION;
+      active = true;
+      customers = [];
+      items = [];
+      nextId = 1;
+      updateStats();
+      say('🏪 開店啦！先製作餐點，再送給第一位客人。', false);
+
+      // 初始客人
+      spawnCustomer();
+      // 計時器
+      gameTimer = setInterval(tick, 250);
+      spawnTimer = setInterval(spawnCustomer, SPAWN_INTERVAL_MS);
+
+      renderKitchen();
+      renderQueue();
+    }
+
+    // ---------- 事件監聽（事件委派） ----------
+    kitchenEl.addEventListener('click', (e) => {
+      const cookBtn = e.target.closest('[data-cook]');
+      if (cookBtn) {
+        cook(cookBtn.dataset.cook);
+        return;
+      }
+      const deliverBtn = e.target.closest('[data-deliver]');
+      if (deliverBtn) {
+        deliver(Number(deliverBtn.dataset.deliver));
+        return;
+      }
+      const trashBtn = e.target.closest('[data-trash]');
+      if (trashBtn) {
+        trashItem(Number(trashBtn.dataset.trash));
+      }
+    });
+
+    // 重新開店按鈕
+    $('reset').addEventListener('click', startGame);
+
+    // 初始化開店
+    startGame();
+
+  })();
 </script>
 </body>
 </html>
