@@ -1,247 +1,513 @@
 <!DOCTYPE html>
-<html lang="zh-Hant">
+<html lang="zh">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>三角洲行動 - 戰術支援價目表</title>
+    <title>早餐店小游戏 · 60秒限时挑战</title>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Arial Black', 'Segoe UI', sans-serif; }
-        body { background: #0a0e14; color: #e0e0e0; padding: 20px; }
-        
-        /* 標籤切換 */
-        .tabs { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; justify-content: center; }
-        .tab { padding: 12px 25px; background: #2a3240; border: 1px solid #333945; color: #8a9ba8; cursor: pointer; border-radius: 5px; }
-        .tab:hover { background: #333945; color: #ffcc00; }
-        .tab.active { background: #ff6600; color: white; }
-        
-        /* 頁面內容 */
-        .page { display: none; background: #1a1f29; border: 2px solid #333945; border-radius: 10px; padding: 30px; max-width: 900px; margin: 0 auto; }
-        .page.active { display: block; }
-        
-        /* 標題 */
-        .header { text-align: center; margin-bottom: 30px; padding-bottom: 15px; border-bottom: 2px solid #ff6600; }
-        .title { color: #ff6600; font-size: 2.5rem; font-weight: bold; margin-bottom: 10px; }
-        .subtitle { color: #8a9ba8; font-size: 1rem; }
-        
-        /* 價格項目 */
-        .price-item { display: flex; justify-content: space-between; align-items: center; padding: 15px; border-bottom: 1px dashed #2a3240; }
-        .price { color: #00ff9d; font-size: 1.5rem; font-weight: bold; background: rgba(0,80,50,0.3); padding: 5px 15px; border-radius: 5px; border: 2px solid #00ff9d; }
-        .guarantee { color: #66b3ff; font-size: 1.3rem; font-weight: bold; }
-        
-        /* 分欄 */
-        .columns { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 20px; }
-        .column { background: rgba(22,27,37,0.8); padding: 20px; border-radius: 5px; border: 1px solid #2a3240; }
-        
-        /* 特殊樣式 */
-        .note { margin-top: 20px; padding: 15px; background: rgba(255,102,0,0.1); border-left: 4px solid #ff6600; color: #ffaa66; }
-        .warning { background: rgba(255,50,50,0.1); border-left: 4px solid #ff3333; color: #ff6666; }
-        
-        /* 響應式 */
-        @media (max-width: 768px) {
-            .columns { grid-template-columns: 1fr; }
-            .title { font-size: 2rem; }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            user-select: none;
+            font-family: 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+        }
+        body {
+            min-height: 100vh;
+            background: linear-gradient(145deg, #f9e7b3 0%, #f5d99b 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 1rem;
+            margin: 0;
+        }
+        .game-container {
+            max-width: 800px;
+            width: 100%;
+            background: #fffaec;
+            border-radius: 48px;
+            box-shadow: 0 20px 30px rgba(0, 0, 0, 0.2), 0 6px 0 #d9b880 inset, 0 -6px 0 #bfa06b inset;
+            padding: 1.5rem 1.8rem 2rem;
+            border: 3px solid #b38b5b;
+        }
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #faeac6;
+            border-radius: 60px;
+            padding: 0.7rem 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 4px 0 #b38b5b, 0 6px 12px rgba(0,0,0,0.1);
+            border: 2px solid #c9a76b;
+        }
+        .money, .timer {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 800;
+            font-size: 1.5rem;
+            background: #fff4dc;
+            padding: 0.3rem 1.4rem;
+            border-radius: 40px;
+            box-shadow: 0 4px 0 #ad8b58 inset, 0 2px 6px rgba(0,0,0,0.1);
+            color: #4d2e1b;
+        }
+        .money span, .timer span {
+            font-size: 2rem;
+            margin-right: 4px;
+        }
+        .timer {
+            background: #ffe6b3;
+        }
+        .timer.warning {
+            background: #ffb3b3;
+            color: #a10000;
+            animation: pulse 1s infinite;
+        }
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+            100% { transform: scale(1); }
+        }
+        .customers-area {
+            background: #efdbb8;
+            border-radius: 30px;
+            padding: 1.2rem 1rem;
+            margin-bottom: 1.2rem;
+            box-shadow: 0 6px 0 #ac8b5c inset, 0 10px 15px rgba(0,0,0,0.1);
+            border: 2px solid #c8a56b;
+        }
+        .customer-queue {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: flex-end;
+            gap: 1.2rem;
+            min-height: 160px;
+        }
+        .customer-card {
+            background: #ffeac2;
+            border-radius: 30px 30px 20px 20px;
+            padding: 0.7rem 1rem 1rem;
+            width: 110px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            box-shadow: 0 8px 0 #b48b4b, 0 10px 18px rgba(0,0,0,0.15);
+            border: 2px solid #dbb87c;
+            transition: all 0.15s;
+        }
+        .customer-face {
+            font-size: 3.5rem;
+            line-height: 1;
+            filter: drop-shadow(0 4px 2px rgba(0,0,0,0.15));
+            margin-bottom: 4px;
+        }
+        .order-badge {
+            background: #fff6e0;
+            border-radius: 50px;
+            padding: 0.3rem 0.6rem;
+            font-size: 1.4rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 2px;
+            box-shadow: 0 2px 0 #ad8b58 inset;
+            width: 100%;
+            color: #3b2a1a;
+        }
+        .order-badge span {
+            font-size: 1.4rem;
+            margin: 0 1px;
+        }
+        .empty-queue {
+            color: #7f613b;
+            font-size: 1.3rem;
+            font-weight: 600;
+            text-align: center;
+            width: 100%;
+            padding: 2rem 0;
+            opacity: 0.8;
+        }
+        .menu-area {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+            margin: 1.5rem 0 1rem;
+        }
+        .food-btn {
+            background: #ffeac2;
+            border: none;
+            border-radius: 40px;
+            padding: 1rem 1.2rem;
+            font-size: 2.6rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            box-shadow: 0 8px 0 #b48b4b, 0 8px 16px rgba(0,0,0,0.2);
+            transition: all 0.08s ease;
+            cursor: pointer;
+            border: 2px solid #dbb87c;
+            flex: 0 1 110px;
+            color: #3b2a1a;
+            font-weight: 700;
+        }
+        .food-btn:active {
+            transform: translateY(5px);
+            box-shadow: 0 3px 0 #b48b4b, 0 8px 16px rgba(0,0,0,0.1);
+        }
+        .food-btn .food-label {
+            font-size: 1rem;
+            background: #f5e0b7;
+            padding: 0.2rem 0.8rem;
+            border-radius: 40px;
+            width: 100%;
+            text-align: center;
+            box-shadow: 0 2px 0 #b48b4b inset;
+            color: #4d2e1b;
+        }
+        .message-area {
+            min-height: 2.8rem;
+            font-size: 1.2rem;
+            font-weight: 700;
+            text-align: center;
+            padding: 0.5rem;
+            border-radius: 30px;
+            background: #faeac6;
+            box-shadow: 0 2px 0 #b48b4b inset;
+            margin-top: 0.8rem;
+            color: #664d33;
+        }
+        .reset-btn {
+            background: #b48b4b;
+            border: none;
+            color: #fff8e7;
+            font-weight: 800;
+            font-size: 1.2rem;
+            padding: 0.8rem 2rem;
+            border-radius: 60px;
+            display: block;
+            margin: 1rem auto 0;
+            box-shadow: 0 6px 0 #6b4f2b, 0 6px 12px rgba(0,0,0,0.2);
+            cursor: pointer;
+            transition: 0.08s;
+            border: 2px solid #dbb87c;
+            letter-spacing: 1px;
+        }
+        .reset-btn:active {
+            transform: translateY(5px);
+            box-shadow: 0 1px 0 #6b4f2b, 0 6px 12px rgba(0,0,0,0.1);
+        }
+        .disabled-click {
+            pointer-events: none;
+            opacity: 0.6;
+            filter: grayscale(0.5);
         }
     </style>
 </head>
 <body>
-    <!-- 標籤導航 -->
-    <div class="tabs">
-        <div class="tab active" onclick="showPage('page1')">基礎/體驗單</div>
-        <div class="tab" onclick="showPage('page2')">航天賭約單</div>
-        <div class="tab" onclick="showPage('page3')">娛樂玩法</div>
-        <div class="tab" onclick="showPage('page4')">規則條款</div>
+<div class="game-container" id="gameContainer">
+    <!-- 頂部狀態 -->
+    <div class="top-bar">
+        <div class="money">💰 <span id="moneyDisplay">0</span></div>
+        <div class="timer" id="timerBox">⏰ <span id="timerDisplay">60</span>s</div>
     </div>
-    
-    <!-- 頁面1：基礎/體驗單 -->
-    <div class="page active" id="page1">
-        <div class="header">
-            <div class="title">三角洲行動</div>
-            <div class="subtitle">基礎方案與體驗方案</div>
-        </div>
-        
-        <div class="columns">
-            <!-- 基礎單 -->
-            <div class="column">
-                <h3 style="color:#ffcc00; margin-bottom:20px;">基礎單</h3>
-                <div class="price-item"><span class="price">500</span><span class="guarantee">保底 600w</span></div>
-                <div class="price-item"><span class="price">800</span><span class="guarantee">保底 900w</span></div>
-                <div class="price-item"><span class="price">1000</span><span class="guarantee">保底 1300w</span></div>
-                <div class="price-item"><span class="price">2000</span><span class="guarantee">保底 2300w</span></div>
-                <div class="price-item"><span class="price">8000</span><span class="guarantee">保底 8600w</span></div>
-                <div class="price-item"><span class="price">10000</span><span class="guarantee">保底 11888w</span></div>
-                <div class="note">※ 炸單補償 +100w (上限1000w)</div>
-            </div>
-            
-            <!-- 體驗單 -->
-            <div class="column">
-                <h3 style="color:#ffcc00; margin-bottom:20px;">體驗單</h3>
-                <div class="price-item"><span class="price">200</span><span class="guarantee">保底 400w</span></div>
-                <div class="price-item"><span class="price">600</span><span class="guarantee">保底 750w</span></div>
-                <div class="price-item"><span class="price">1500</span><span class="guarantee">保底 1700w</span></div>
-                <div class="note" style="background:rgba(0,150,255,0.1); border-color:#0096ff; color:#66b3ff;">
-                    <strong>其他服務：</strong><br>
-                    • 航天絕密賭約單<br>
-                    • 娛樂玩法<br>
-                    • 詳細規則請看後續頁面
-                </div>
-            </div>
+
+    <!-- 客人佇列 -->
+    <div class="customers-area">
+        <div class="customer-queue" id="customerQueue">
+            <!-- 隨機客人會動態產生 -->
+            <div class="empty-queue">等待客人上門...</div>
         </div>
     </div>
-    
-    <!-- 頁面2：航天賭約單 -->
-    <div class="page" id="page2">
-        <div class="header">
-            <div class="title">航天絕密賭約單</div>
-            <div class="subtitle">高風險高回報 | 限單局帶出金額</div>
-        </div>
-        
-        <div class="column">
-            <h3 style="color:#ff66ff; margin-bottom:20px;">單局挑戰賭約</h3>
-            <div class="price-item"><span class="price" style="color:#ff66ff; border-color:#ff66ff;">1000</span><span class="guarantee">單局沒有 588w 不結單</span></div>
-            <div class="price-item"><span class="price" style="color:#ff66ff; border-color:#ff66ff;">1500</span><span class="guarantee">單局沒有 688w 不結單</span></div>
-            <div class="price-item"><span class="price" style="color:#ff66ff; border-color:#ff66ff;">2000</span><span class="guarantee">單局沒有 799w 不結單</span></div>
-            <div class="price-item"><span class="price" style="color:#ff66ff; border-color:#ff66ff;">2500</span><span class="guarantee">單局沒有 888w 不結單</span></div>
-            <div class="price-item"><span class="price" style="color:#ff66ff; border-color:#ff66ff;">3500</span><span class="guarantee">單局沒有 1288w 不結單</span></div>
-            <div class="price-item"><span class="price" style="color:#ff66ff; border-color:#ff66ff;">5500</span><span class="guarantee">單局沒有 1488w 不結單</span></div>
-        </div>
-        
-        <div class="columns" style="margin-top:30px;">
-            <div class="column">
-                <h3 style="color:#ff66ff; margin-bottom:20px;">稀有目標保底</h3>
-                <div class="price-item"><span class="price" style="color:#ff66ff; border-color:#ff66ff;">588</span><span class="guarantee">沒出鍋保 688w</span></div>
-                <div class="price-item"><span class="price" style="color:#ff66ff; border-color:#ff66ff;">1088</span><span class="guarantee">必出鍋</span></div>
-                <div class="price-item"><span class="price" style="color:#ff66ff; border-color:#ff66ff;">1888</span><span class="guarantee">沒出油保 2000w</span></div>
-                <div class="price-item"><span class="price" style="color:#ff66ff; border-color:#ff66ff;">4888</span><span class="guarantee">必出油</span></div>
-            </div>
-            
-            <div class="column">
-                <h3 style="color:#ff66ff; margin-bottom:20px; margin-top:45px;">&nbsp;</h3>
-                <div class="price-item"><span class="price" style="color:#ff66ff; border-color:#ff66ff;">5200</span><span class="guarantee">沒出心保 6888w</span></div>
-                <div class="price-item"><span class="price" style="color:#ff66ff; border-color:#ff66ff;">40000</span><span class="guarantee">必出心</span></div>
-                <div class="price-item"><span class="price" style="color:#ff66ff; border-color:#ff66ff;">90000</span><span class="guarantee">沒出淚保 10888w</span></div>
-                <div class="price-item"><span class="price" style="color:#ff66ff; border-color:#ff66ff;">130000</span><span class="guarantee">必出淚</span></div>
-            </div>
-        </div>
-        
-        <div class="warning" style="margin-top:30px;">
-            ⚠️ 賭約規則：下訂後不可反悔或故意卡保底，賭約內容不可更動，得失心重者勿下單。
-        </div>
+
+    <!-- 餐點按鈕 -->
+    <div class="menu-area" id="menuArea">
+        <button class="food-btn" data-food="toast">🍞<span class="food-label">烤吐司</span></button>
+        <button class="food-btn" data-food="pancake">🥞<span class="food-label">蛋餅</span></button>
+        <button class="food-btn" data-food="soymilk">🥛<span class="food-label">豆漿</span></button>
+        <button class="food-btn" data-food="milktea">🧋<span class="food-label">奶茶</span></button>
     </div>
-    
-    <!-- 頁面3：娛樂玩法 -->
-    <div class="page" id="page3">
-        <div class="header">
-            <div class="title">娛樂玩法</div>
-            <div class="subtitle">趣味挑戰 | 客製化服務</div>
-        </div>
-        
-        <div class="columns">
-            <div class="column">
-                <h3 style="color:#00ffff; margin-bottom:20px;">牛角單</h3>
-                <div class="price-item"><span class="price" style="color:#00ffff; border-color:#00ffff;">1088</span><span class="guarantee">保底 800w</span></div>
-                <div class="note" style="background:rgba(0,200,200,0.1); border-color:#00ffff; color:#00ffff;">
-                    ※ 一個牛角額外加 50w (無上限)<br><br>
-                    <small>牛角是遊戲中的特殊高價值物品，可重複獲取。</small>
-                </div>
-            </div>
-            
-            <div class="column">
-                <h3 style="color:#00ffff; margin-bottom:20px;">自力根生</h3>
-                <div class="price-item"><span class="price" style="color:#00ffff; border-color:#00ffff;">1000</span><span class="guarantee">初始保底 500w</span></div>
-                <div class="note" style="background:rgba(0,200,200,0.1); border-color:#00ffff; color:#00ffff;">
-                    ※ 打手幫忙起裝，裝備會帶出去<br>
-                    ※ 一個人加 100w，下局打手會幫忙打到金額<br><br>
-                    <small>適合想體驗完整成長過程的老闆。</small>
-                </div>
-            </div>
-        </div>
-    </div>
-    
-    <!-- 頁面4：規則條款 -->
-    <div class="page" id="page4">
-        <div class="header">
-            <div class="title">服務規則條款</div>
-            <div class="subtitle">請仔細閱讀並遵守以下規則</div>
-        </div>
-        
-        <div class="column">
-            <h3 style="color:#ffcc00; margin-bottom:20px;">基本規則</h3>
-            <ul style="list-style:none; padding-left:20px; color:#e0e0e0; line-height:1.8;">
-                <li style="margin-bottom:15px; padding-left:15px; border-left:3px solid #ff6600;">
-                    <strong>下單確認：</strong> 下單前請確認需求及價格，下單後10分鐘內可取消
-                </li>
-                <li style="margin-bottom:15px; padding-left:15px; border-left:3px solid #ff6600;">
-                    <strong>錄影存證：</strong> 護航期間打手全程錄影，建議老闆也錄屏
-                </li>
-                <li style="margin-bottom:15px; padding-left:15px; border-left:3px solid #ff6600;">
-                    <strong>配合指令：</strong> 任務開始請配合打手行動，如不配合打手有權結單
-                </li>
-                <li style="margin-bottom:15px; padding-left:15px; border-left:3px solid #ff6600;">
-                    <strong>聯繫規範：</strong> 結束護航請勿遊戲內私下索要打手聯絡方式
-                </li>
-                <li style="margin-bottom:15px; padding-left:15px; border-left:3px solid #ff6600;">
-                    <strong>官方渠道：</strong> 所有訂單一律透過官方人員下單
-                </li>
-            </ul>
-            
-            <h3 style="color:#ffcc00; margin:30px 0 20px;">賭約單特別規則</h3>
-            <ul style="list-style:none; padding-left:20px; color:#e0e0e0; line-height:1.8;">
-                <li style="margin-bottom:15px; padding-left:15px; border-left:3px solid #ff3333;">
-                    <strong>不可反悔：</strong> 賭約單下訂後不可反悔或故意卡保底
-                </li>
-                <li style="margin-bottom:15px; padding-left:15px; border-left:3px solid #ff3333;">
-                    <strong>合約精神：</strong> 賭約內容不可更動及耍賴，玩的就是心跳
-                </li>
-                <li style="margin-bottom:15px; padding-left:15px; border-left:3px solid #ff3333;">
-                    <strong>禁止情勒：</strong> 不可私下聯繫打手情勒求吃多點
-                </li>
-            </ul>
-            
-            <div class="warning" style="margin-top:30px;">
-                <strong>⚠️ 重要提醒：</strong><br>
-                1. 遊戲帳號安全由老闆自行負責<br>
-                2. 請勿將帳號密碼交給非官方人員<br>
-                3. 交易請透過官方渠道，避免詐騙
-            </div>
-        </div>
-    </div>
-    
-    <script>
-        // 切換頁面功能
-        function showPage(pageId) {
-            // 隱藏所有頁面
-            document.querySelectorAll('.page').forEach(page => {
-                page.classList.remove('active');
-            });
-            
-            // 移除所有標籤的active類
-            document.querySelectorAll('.tab').forEach(tab => {
-                tab.classList.remove('active');
-            });
-            
-            // 顯示選擇的頁面
-            document.getElementById(pageId).classList.add('active');
-            
-            // 激活對應的標籤
-            event.target.classList.add('active');
+
+    <!-- 提示訊息 -->
+    <div class="message-area" id="messageArea">點選餐點完成訂單！</div>
+
+    <!-- 重玩按鈕 -->
+    <button class="reset-btn" id="resetBtn">重新開店</button>
+</div>
+
+<script>
+    (function() {
+        // ---------- 遊戲設定 ----------
+        const FOODS = [
+            { key: 'toast', name: '烤吐司', emoji: '🍞' },
+            { key: 'pancake', name: '蛋餅', emoji: '🥞' },
+            { key: 'soymilk', name: '豆漿', emoji: '🥛' },
+            { key: 'milktea', name: '奶茶', emoji: '🧋' }
+        ];
+
+        // 客人表情
+        const FACES = ['👩', '👨', '👧', '👦', '👵', '👴', '🧑', '👩‍🦰', '👨‍🦱', '👱‍♀️', '👩‍🦳', '🧔'];
+
+        // 遊戲狀態
+        let money = 0;
+        let timeLeft = 60;              // 秒
+        let timerInterval = null;
+        let gameActive = false;         // 是否進行中
+        let customers = [];             // 客人陣列 { id, face, order (food key) }
+
+        // 控制客人產生的計時器
+        let spawnInterval = null;
+
+        // 下一個客人id
+        let nextCustomerId = 1;
+
+        // DOM 元素
+        const moneyDisplay = document.getElementById('moneyDisplay');
+        const timerDisplay = document.getElementById('timerDisplay');
+        const timerBox = document.getElementById('timerBox');
+        const customerQueue = document.getElementById('customerQueue');
+        const messageArea = document.getElementById('messageArea');
+        const resetBtn = document.getElementById('resetBtn');
+        const foodBtns = document.querySelectorAll('.food-btn');
+
+        // ---------- 輔助函式 ----------
+        // 隨機從陣列取一個
+        function randomItem(arr) {
+            return arr[Math.floor(Math.random() * arr.length)];
         }
-        
-        // 價格項目懸停效果
-        document.querySelectorAll('.price-item').forEach(item => {
-            item.addEventListener('mouseenter', function() {
-                this.style.background = 'rgba(255,102,0,0.05)';
-                this.style.transform = 'scale(1.02)';
+
+        // 更新金錢顯示
+        function updateMoneyDisplay() {
+            moneyDisplay.textContent = money;
+        }
+
+        // 更新計時器顯示
+        function updateTimerDisplay() {
+            timerDisplay.textContent = timeLeft;
+            if (timeLeft <= 10) {
+                timerBox.classList.add('warning');
+            } else {
+                timerBox.classList.remove('warning');
+            }
+        }
+
+        // 顯示短暫訊息 (幾秒後恢復預設)
+        function setMessage(text, isGood = true, duration = 1500) {
+            messageArea.textContent = text;
+            messageArea.style.color = isGood ? '#2b5e1e' : '#a12b2b';
+            if (duration > 0) {
+                clearTimeout(messageArea.msgTimeout);
+                messageArea.msgTimeout = setTimeout(() => {
+                    if (gameActive) {
+                        messageArea.textContent = '點選餐點完成訂單！';
+                        messageArea.style.color = '#664d33';
+                    }
+                }, duration);
+            }
+        }
+
+        // ---------- 渲染客人佇列 ----------
+        function renderCustomers() {
+            if (!customerQueue) return;
+
+            if (customers.length === 0) {
+                customerQueue.innerHTML = '<div class="empty-queue">等待客人上門...</div>';
+                return;
+            }
+
+            let html = '';
+            customers.forEach(cust => {
+                // 找出餐點對應的emoji
+                const foodItem = FOODS.find(f => f.key === cust.order);
+                const foodEmoji = foodItem ? foodItem.emoji : '❓';
+
+                html += `
+                    <div class="customer-card" data-customer-id="${cust.id}">
+                        <div class="customer-face">${cust.face}</div>
+                        <div class="order-badge"><span>${foodEmoji}</span></div>
+                    </div>
+                `;
             });
-            item.addEventListener('mouseleave', function() {
-                this.style.background = '';
-                this.style.transform = '';
+            customerQueue.innerHTML = html;
+        }
+
+        // ---------- 新增客人 (隨機) ----------
+        function spawnCustomer() {
+            if (!gameActive) return;          // 遊戲結束就不生成
+            // 避免太多客人，佇列上限 5 位
+            if (customers.length >= 5) return;
+
+            // 隨機選擇餐點
+            const randomFood = randomItem(FOODS);
+            const randomFace = randomItem(FACES);
+
+            const newCustomer = {
+                id: nextCustomerId++,
+                face: randomFace,
+                order: randomFood.key,
+            };
+
+            customers.push(newCustomer);
+            renderCustomers();
+        }
+
+        // ---------- 開始遊戲 (重置並啟動) ----------
+        function startGame() {
+            // 停止所有計時器
+            if (timerInterval) clearInterval(timerInterval);
+            if (spawnInterval) clearInterval(spawnInterval);
+
+            // 重置狀態
+            gameActive = true;
+            money = 0;
+            timeLeft = 60;
+            customers = [];
+            nextCustomerId = 1;
+            updateMoneyDisplay();
+            updateTimerDisplay();
+            timerBox.classList.remove('warning');
+            messageArea.textContent = '點選餐點完成訂單！';
+            messageArea.style.color = '#664d33';
+
+            // 清空佇列並渲染
+            renderCustomers();
+
+            // 立刻產生第一位客人（讓遊戲不至於空等）
+            spawnCustomer();
+            // 每隔 2.2 秒產生一位新客人 (不要太密集)
+            spawnInterval = setInterval(() => {
+                spawnCustomer();
+            }, 2200);
+
+            // 倒數計時器
+            timerInterval = setInterval(() => {
+                if (!gameActive) return;   // 如果遊戲已結束，不再倒數
+
+                timeLeft -= 1;
+                updateTimerDisplay();
+
+                // 時間到，結束遊戲
+                if (timeLeft <= 0) {
+                    timeLeft = 0;
+                    updateTimerDisplay();
+                    endGame('時間到！');
+                }
+            }, 1000);
+        }
+
+        // ---------- 結束遊戲 ----------
+        function endGame(reason = '時間到！') {
+            if (!gameActive) return;   // 避免重複觸發
+
+            gameActive = false;
+            if (timerInterval) {
+                clearInterval(timerInterval);
+                timerInterval = null;
+            }
+            if (spawnInterval) {
+                clearInterval(spawnInterval);
+                spawnInterval = null;
+            }
+
+            // 標記最後訊息
+            messageArea.textContent = `${reason} 最終金額：💰${money}`;
+            messageArea.style.color = '#a12b2b';
+
+            // 把所有客人卡片加個灰階? (視覺上沒差，但可以保留)
+            // 按鈕不能按 (css 處理，但用 pointer-events 更好)
+            // 直接將按鈕禁用? 我們用遊戲狀態控制 click 即可
+        }
+
+        // ---------- 處理出餐 (點擊餐點) ----------
+        function handleFoodClick(foodKey) {
+            if (!gameActive) {
+                // 遊戲未開始或已結束，不能出餐
+                return;
+            }
+
+            // 如果沒有客人
+            if (customers.length === 0) {
+                // 沒有客人時出餐 = 浪費? 小扣款? 這裡設計為口頭警告但不扣錢 (比較簡單)
+                setMessage('沒有客人喔！', false, 1000);
+                return;
+            }
+
+            // 找第一位客人 (排隊最前面的)
+            const firstCustomer = customers[0];
+            const orderedFood = firstCustomer.order;
+            const orderedItem = FOODS.find(f => f.key === orderedFood);
+            const orderedName = orderedItem ? orderedItem.name : orderedFood;
+
+            if (foodKey === orderedFood) {
+                // 正確出餐
+                // 賺錢 (每單 +20 元)
+                money += 20;
+                updateMoneyDisplay();
+                // 移除第一位客人
+                customers.shift();
+                renderCustomers();
+                // 提示成功
+                setMessage(`✅ 正確！${orderedName}  +20元`, true, 800);
+                // 如果客人空閒，可以加一點小獎勵? 不用
+            } else {
+                // 錯誤出餐 -> 扣款 10 元，但金額不會低於 0 (避免負數比較友善)
+                const penalty = 10;
+                money = Math.max(0, money - penalty);
+                updateMoneyDisplay();
+                // 扣款提示
+                setMessage(`❌ 弄錯了！客人要的是 ${orderedName}  (-10元)`, false, 1200);
+                // 錯誤時不移除客人，客人會繼續等
+            }
+        }
+
+        // ---------- 事件綁定 ----------
+        function bindEvents() {
+            // 餐點按鈕
+            foodBtns.forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const foodKey = btn.dataset.food;
+                    handleFoodClick(foodKey);
+                });
             });
-        });
-    </script>
+
+            // 重置按鈕
+            resetBtn.addEventListener('click', () => {
+                // 停止所有計時器
+                if (timerInterval) clearInterval(timerInterval);
+                if (spawnInterval) clearInterval(spawnInterval);
+                // 重新開始
+                startGame();
+            });
+
+            // 避免雙擊按鈕時選取文字
+            foodBtns.forEach(btn => {
+                btn.addEventListener('mousedown', (e) => e.preventDefault());
+            });
+        }
+
+        // ---------- 初始化 (頁面載入時啟動) ----------
+        function init() {
+            bindEvents();
+            // 直接開始遊戲
+            startGame();
+        }
+
+        // 頁面載入完成後執行
+        window.addEventListener('DOMContentLoaded', init);
+
+        // 如果腳本在DOM之後執行，也確保啟動
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', init);
+        } else {
+            init();
+        }
+
+    })();
+</script>
 </body>
-
 </html>
-
-
-
-
