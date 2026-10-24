@@ -1,679 +1,144 @@
-
-
 <!DOCTYPE html>
-
 <html lang="zh-Hant">
-
 <head>
-
-<meta charset="UTF-8">
-
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
-
-<title>早餐店大忙人｜3D 早餐店</title>
-
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover"><meta name="theme-color" content="#17120e">
+<title>早餐店大忙人｜3D 廚房</title>
 <style>
+:root{--bg:#17120e;--panel:rgba(30,24,19,.94);--line:#66503a;--gold:#f4bd72;--cream:#fff0d3;--green:#8bce8b;--red:#ff8171}*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;height:100dvh;overflow:hidden;overscroll-behavior:none;-webkit-user-select:none;user-select:none;-webkit-tap-highlight-color:transparent;background:#17120e;color:#fff5e7;font-family:system-ui,-apple-system,"Noto Sans TC",sans-serif}button{font:inherit;touch-action:manipulation;-webkit-appearance:none;appearance:none;cursor:pointer}button:disabled{opacity:.35;cursor:not-allowed}#scene{position:fixed;inset:0;z-index:0}#scene canvas{display:block;width:100%;height:100%}.vignette{position:fixed;inset:0;pointer-events:none;z-index:1;background:linear-gradient(180deg,rgba(10,8,6,.62),transparent 22%,transparent 65%,rgba(10,8,6,.72))}.hud{position:fixed;z-index:3;inset:0;display:flex;flex-direction:column;pointer-events:none;padding:calc(env(safe-area-inset-top) + 9px) 11px calc(env(safe-area-inset-bottom) + 8px)}.top{pointer-events:auto;display:flex;align-items:center;justify-content:space-between;gap:8px}.brand{display:flex;align-items:center;gap:8px;background:rgba(29,21,15,.86);border:1px solid #8b6947;border-radius:17px;padding:8px 11px;backdrop-filter:blur(10px)}.logo{width:34px;height:34px;border-radius:11px;background:linear-gradient(145deg,#ffcf83,#b76d32);display:grid;place-items:center;font-size:21px}.brand strong{font-size:14px;display:block}.brand small{font-size:9px;color:#d6b995;letter-spacing:1.4px}.stats{display:flex;gap:5px}.stat{background:rgba(29,21,15,.88);border:1px solid #75583b;border-radius:12px;padding:7px 8px;min-width:54px;text-align:center;backdrop-filter:blur(8px)}.stat span{display:block;font-size:9px;color:#d7b990}.stat b{font-size:14px;font-variant-numeric:tabular-nums}.customer-wrap{pointer-events:auto;margin-top:9px;background:rgba(29,21,15,.91);border:1px solid #76583a;border-radius:18px;padding:9px;backdrop-filter:blur(10px)}.section-head{display:flex;justify-content:space-between;align-items:center;font-size:12px;font-weight:850;margin-bottom:7px}.live{color:#a7e9a6;font-size:10px}.live:before{content:'●';font-size:8px;margin-right:4px}.queue{display:flex;gap:7px;overflow-x:auto;scrollbar-width:none}.queue::-webkit-scrollbar{display:none}.customer{flex:0 0 87px;background:linear-gradient(145deg,#59432d,#30231a);border:1px solid #94704a;border-radius:13px;padding:7px 5px;text-align:center;position:relative}.customer.first{border-color:#ffd18a;box-shadow:inset 0 0 0 1px #ffd18a44;background:linear-gradient(145deg,#78512c,#3c2818)}.face{font-size:25px}.order{font-size:11px;font-weight:900;margin:2px 0}.patience{height:5px;background:#201b17;border-radius:8px;overflow:hidden;margin-top:6px}.patience i{display:block;height:100%;background:#8bd28d}.patience.low i{background:#ff6657}.meta{font-size:9px;color:#d8c0a2;margin-top:4px}.firsttag{position:absolute;right:4px;top:4px;background:#ffd18a;color:#39220e;font-size:8px;font-weight:900;border-radius:4px;padding:2px 3px}.middle{flex:1;min-height:0;pointer-events:none;display:flex;align-items:flex-end;justify-content:center;padding-bottom:8px}.scene-tip{max-width:390px;text-align:center;background:rgba(24,18,13,.78);border:1px solid #745638;color:#fbe3bf;border-radius:12px;padding:8px 13px;font-size:11px;backdrop-filter:blur(8px);text-shadow:0 1px 2px #000}.bottom{pointer-events:auto;display:flex;flex-direction:column;gap:8px}.message{background:rgba(30,23,17,.94);border:1px solid #795a3b;border-radius:13px;padding:9px 12px;text-align:center;font-size:11px;font-weight:800;min-height:37px;backdrop-filter:blur(10px)}.message.bad{border-color:#a94d40;color:#ffb3a9}.workbench{background:rgba(26,20,15,.96);border:1px solid #6c5035;border-radius:18px;padding:9px;backdrop-filter:blur(14px);max-height:38vh;overflow-y:auto;overscroll-behavior:contain}.workhead{display:flex;align-items:center;justify-content:space-between;font-size:12px;font-weight:900;margin-bottom:8px}.workhead small{font-size:9px;color:#d0b08b;font-weight:500}.grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);grid-template-rows:auto auto;align-items:start;gap:7px}.station{border:1px solid #634a32;border-radius:13px;background:linear-gradient(145deg,#403023,#2a2018);padding:8px;min-width:0}.station.drink{background:linear-gradient(145deg,#263c32,#1e2c25);border-color:#42644e}.station[data-food="toast"]{grid-column:1;grid-row:1}.station[data-food="pancake"]{grid-column:1;grid-row:2}.station[data-food="soymilk"]{grid-column:2;grid-row:1}.station[data-food="milktea"]{grid-column:2;grid-row:2}.station-head{display:flex;align-items:center;gap:6px;margin-bottom:7px}.emoji{font-size:24px}.station-head strong{font-size:12px;display:block}.station-head small{display:block;color:#d5b894;font-size:9px;margin-top:2px}.price{margin-left:auto;color:#ffd08c;font-size:10px;font-weight:900}.action{width:100%;border:0;border-radius:9px;background:linear-gradient(135deg,#e5ac65,#a96a37);color:#27170b;font-weight:900;font-size:11px;padding:9px 4px}.drink .action{background:linear-gradient(135deg,#a6d9a4,#4f9160)}.items{display:flex;flex-direction:column;gap:5px;margin-top:6px}.item{padding:7px;border:1px solid #72543a;border-radius:9px;background:#211912;font-size:10px}.item.ready{border-color:#5b9060;background:#1d2a1e}.item.burnt{border-color:#a7473c;background:#301b18}.itemrow{display:flex;align-items:center;gap:5px}.itemrow span{font-size:18px}.itemrow b{flex:1;font-size:10px}.itemrow small{font-size:9px;color:#d2b895}.item button{width:100%;margin-top:5px;border:0;border-radius:7px;background:#8b633b;color:white;padding:7px 3px;font-size:10px;font-weight:900}.item.ready button{background:#4e8d58}.item.burnt button{background:#a34137}.empty{border:1px dashed #6a5139;border-radius:8px;padding:8px;text-align:center;color:#ad9273;font-size:9px}.footer{display:flex;justify-content:space-between;align-items:center;gap:8px;color:#d5b894;font-size:9px}.reset{background:#33271d;border:1px solid #795a3b;border-radius:10px;color:#ffe5c2;padding:8px 11px;font-size:10px;font-weight:900}.settings{pointer-events:auto;display:flex;align-items:center;gap:7px;flex-wrap:wrap;background:rgba(29,21,15,.94);border:1px solid #76583a;border-radius:13px;padding:7px 9px;font-size:10px}.settings label{display:flex;align-items:center;gap:5px;color:#e7cba8}.settings select{max-width:100%;background:#3a2b1e;color:#fff0d3;border:1px solid #8b6947;border-radius:8px;padding:6px 7px;font-size:11px}.settings .apply-note{color:#bda17f;font-size:9px}
+.setup-overlay{position:fixed;inset:0;z-index:20;display:flex;align-items:center;justify-content:center;overflow-y:auto;padding: max(14px, env(safe-area-inset-top)) 16px max(14px, env(safe-area-inset-bottom));background:rgba(0,0,0,.78);backdrop-filter:blur(8px)}.setup-card{width:100%;max-width:360px;max-height:100%;overflow-y:auto;background:linear-gradient(160deg,#38291d,#1c1713);border:1px solid #b18452;border-radius:24px;padding:23px;box-shadow:0 24px 80px #000a}.setup-card .setup-logo{font-size:46px;text-align:center}.setup-card h2{text-align:center;margin:7px 0 4px;font-size:23px}.setup-card .sub{text-align:center;color:#d1b18b;font-size:12px;margin:0 0 20px}.setup-field{margin:14px 0}.setup-field label{display:block;font-weight:850;font-size:13px;margin-bottom:8px}.setup-options{display:grid;grid-template-columns:1fr 1fr;gap:8px}.setup-options.three{grid-template-columns:repeat(3,minmax(0,1fr))}.pick{border:1px solid #6e5238;border-radius:12px;background:#292019;color:#f8e5cb;padding:12px 5px;font-weight:850;font-size:13px}.pick small{display:block;font-size:10px;font-weight:500;color:#c9aa85;margin-top:5px}.pick.selected{border-color:#ffd18a;background:linear-gradient(145deg,#76512e,#49301c);box-shadow:inset 0 0 0 1px #ffd18a55}.setup-start{width:100%;margin-top:15px;border:0;border-radius:13px;padding:14px;background:linear-gradient(135deg,#ffd18a,#bd793b);color:#2c1b0d;font-weight:950;font-size:15px}.setup-hint{text-align:center;color:#bda17f;font-size:10px;margin-top:10px}
+.overlay{position:fixed;inset:0;z-index:10;background:#000b;display:none;align-items:center;justify-content:center;padding:20px}.overlay.show{display:flex}.modal{width:100%;max-width:330px;border-radius:22px;background:#2a2018;border:1px solid #94704a;text-align:center;padding:24px;box-shadow:0 20px 80px #0009}.modal .big{font-size:45px}.modal h2{margin:6px 0}.modal p{font-size:12px;color:#d4b99a}.modal button{width:100%;padding:13px;border:0;border-radius:12px;background:linear-gradient(135deg,#ffd18a,#bd793b);font-weight:900;color:#2c1b0d;margin-top:10px}@media(max-width:390px){.workbench{max-height:39vh}.grid{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}.brand{padding:6px 7px}.brand strong{font-size:12px}.brand small{font-size:8px}.logo{width:30px;height:30px}.stat{min-width:45px;padding:6px 5px}.stat b{font-size:12px}.customer{flex-basis:78px}.workbench{max-height:35vh;padding:7px}.station{padding:6px}.emoji{font-size:21px}.station-head strong{font-size:11px}.action{padding:8px 3px}}@media(max-height:700px){.customer-wrap{padding:7px;margin-top:6px}.customer{padding:5px}.face{font-size:21px}.workbench{max-height:31vh}.middle{padding-bottom:4px}.scene-tip{padding:6px 10px}}
 
-*{box-sizing:border-box}
-
-html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#17120e;color:#fff0d3;font-family:system-ui,sans-serif}
-
-button{cursor:pointer;touch-action:manipulation;font:inherit}
-
-#scene{position:fixed;inset:0}
-
-#scene canvas{display:block;width:100%;height:100%}
-
-.hud{position:fixed;inset:0;z-index:2;display:flex;flex-direction:column;padding:env(safe-area-inset-top) 10px env(safe-area-inset-bottom);pointer-events:none}
-
-header,.customers,.workbench,.status,.footer{pointer-events:auto;background:#211a14ee;border:1px solid #795b3b;border-radius:16px;backdrop-filter:blur(10px)}
-
-header{display:flex;justify-content:space-between;align-items:center;gap:6px;padding:9px;margin-bottom:7px}
-
-h1{font-size:14px;margin:0}
-
-.brand small{display:block;font-size:9px;color:#c8a985;margin-top:3px}
-
-.stats{display:flex;gap:4px}
-
-.stat{border:1px solid #60472f;border-radius:9px;padding:5px;text-align:center;font-size:9px;min-width:45px}
-
-.stat b{display:block;font-size:13px;margin-top:3px}
-
-.customers{padding:9px;margin-bottom:8px}
-
-.heading{display:flex;justify-content:space-between;font-weight:800;font-size:12px;margin-bottom:7px}
-
-.queue{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none}
-
-.queue::-webkit-scrollbar{display:none}
-
-.customer{flex:0 0 82px;text-align:center;background:#392b1f;border:1px solid #785636;border-radius:12px;padding:7px 4px;position:relative}
-
-.customer.first{border-color:#ffd18a;background:#624326}
-
-.face{font-size:24px}
-
-.order{font-size:10px;font-weight:bold;margin:3px 0}
-
-.bar{height:5px;background:#211b16;border-radius:9px;overflow:hidden;margin-top:6px}
-
-.bar i{display:block;height:100%;background:#8bd28d}
-
-.meta{font-size:9px;color:#e1c7a6;margin-top:4px}
-
-.middle{flex:1;min-height:0;display:flex;align-items:flex-end;justify-content:center;padding-bottom:7px;pointer-events:none}
-
-.tip{background:#211a14d9;border:1px solid #795b3b;border-radius:10px;padding:7px 10px;font-size:10px;text-align:center}
-
-.bottom{pointer-events:auto;display:flex;flex-direction:column;gap:7px}
-
-.status{padding:9px;text-align:center;font-size:11px;font-weight:bold}
-
-.status.bad{color:#ffaaa0;border-color:#a94d40}
-
-.workbench{padding:8px;max-height:36vh;overflow-y:auto;overscroll-behavior:contain}
-
-.worktitle{display:flex;justify-content:space-between;font-size:12px;font-weight:bold;margin-bottom:7px}
-
-.worktitle small{font-size:9px;color:#d0b08b;font-weight:normal}
-
-.grid{display:grid;grid-template-columns:1fr 1fr;gap:7px}
-
-.station{min-width:0;background:linear-gradient(145deg,#493321,#2a2018);border:1px solid #79583a;border-radius:12px;padding:7px}
-
-.station.drink{background:linear-gradient(145deg,#304639,#1d2c23);border-color:#456c50}
-
-.station:nth-child(1){grid-column:1;grid-row:1}
-
-.station:nth-child(2){grid-column:1;grid-row:2}
-
-.station:nth-child(3){grid-column:2;grid-row:1}
-
-.station:nth-child(4){grid-column:2;grid-row:2}
-
-.station h3{font-size:11px;margin:0 0 4px}
-
-.station p{font-size:9px;color:#d8b995;margin:0 0 7px}
-
-.station button{width:100%;border:0;border-radius:8px;padding:8px 3px;background:#e4ad67;color:#29190c;font-size:10px;font-weight:bold}
-
-.drink button{background:#9fd3a1}
-
-.station button:disabled{opacity:.35}
-
-.items{display:flex;flex-direction:column;gap:5px;margin-top:6px}
-
-.item{background:#211912;border:1px solid #705238;border-radius:8px;padding:6px;font-size:10px}
-
-.item.ready{background:#1c2c20;border-color:#4e8759}
-
-.item.burnt{background:#351b18;border-color:#a7473c}
-
-.item button{margin-top:5px;background:#8b633b;color:white;padding:6px}
-
-.item.ready button{background:#4e8d58}
-
-.item.burnt button{background:#a34137}
-
-.empty{font-size:9px;color:#ad9273;text-align:center;padding:7px}
-
-.footer{display:flex;justify-content:space-between;align-items:center;gap:7px;padding:7px;font-size:9px;color:#d5b894}
-
-.reset{background:#493523;border:1px solid #795b3b;color:#ffe5c2;border-radius:9px;padding:8px;font-size:10px;white-space:nowrap}
-
-.overlay{display:none;position:fixed;inset:0;background:#000b;z-index:5;align-items:center;justify-content:center;padding:20px}
-
-.overlay.show{display:flex}
-
-.modal{background:#2a2018;border:1px solid #94704a;border-radius:20px;padding:25px;text-align:center;width:100%;max-width:320px}
-
-.modal button{width:100%;padding:12px;border:0;border-radius:10px;background:#ffd18a;font-weight:bold}
-
-@media(max-height:700px){.customers{padding:6px;margin-bottom:5px}.customer{padding:5px}.face{font-size:20px}.workbench{max-height:32vh}}
+/* 結算畫面：依照使用者提供的參考圖 */
+#over{z-index:30;background:rgba(0,0,0,.72);backdrop-filter:blur(2px);padding:18px}
+#over .modal{width:min(100%,760px);max-width:760px;min-height:360px;border-radius:56px;background:#2b2018;border:2px solid #9b7955;text-align:center;padding:clamp(28px,6vw,70px) clamp(22px,6vw,76px);box-shadow:0 24px 80px #0009;display:flex;flex-direction:column;align-items:center;justify-content:center}
+#over .modal .big{font-size:clamp(58px,10vw,100px);line-height:1.2;margin-bottom:24px}
+#over .modal h2{font-size:clamp(30px,5vw,56px);font-weight:950;color:#fff0d3;margin:0 0 38px}
+#over .modal p{font-size:clamp(18px,3vw,34px);line-height:1.5;color:#fff0d3;margin:0 0 32px}
+#over .modal button{width:100%;margin-top:8px;padding:clamp(18px,3vw,30px);border:0;border-radius:28px;background:#ffd18a;color:#2876d2;font-size:clamp(22px,3.5vw,38px);font-weight:950}
 
 </style>
-
 </head>
-
 <body>
-
-<div id="scene"></div>
-
+<div id="scene"></div><div class="vignette"></div>
 <div class="hud">
-
-<header>
-
- <div class="brand"><h1>🍳 早餐店大忙人</h1><small>3D BREAKFAST CLUB</small></div>
-
- <div class="stats">
-
-  <div class="stat">💰 收入<b id="money">$0</b></div>
-
-  <div class="stat">⏱ 剩餘<b id="time">120</b></div>
-
-  <div class="stat">😊 服務<b id="served">0</b></div>
-
+ <header class="top">
+  <div class="brand"><div class="logo">🍳</div><div><strong>早餐店大忙人</strong><small>3D BREAKFAST CLUB</small></div></div>
+  <div class="stats"><div class="stat"><span>💰 收入</span><b id="money">$0</b></div><div class="stat"><span>⏱ 剩餘</span><b id="time">120</b></div><div class="stat"><span>☺ 服務</span><b id="served">0</b></div></div>
+ </header>
+ <section class="customer-wrap"><div class="section-head"><span>👥 客人訂單</span><span class="live">營業中</span></div><div class="queue" id="queue"></div></section>
+ <div class="settings"><label>🎮 難度 <select id="difficulty"><option value="easy">簡單</option><option value="hard">困難</option></select></label><label>⏱ 遊戲時間 <select id="duration"><option value="60">60 秒</option><option value="90">90 秒</option><option value="120" selected>120 秒</option></select></label><span class="apply-note">更改後按「重新開店」生效</span></div>
+ <div class="middle"><div class="scene-tip" id="sceneTip">3D 早餐廚房 · 點選下方按鈕開始備餐</div></div>
+ <div class="bottom">
+  <div class="message" id="message">🏪 開店了！請先查看第一位客人的訂單。</div>
+  <section class="workbench"><div class="workhead"><span>🍽️ 廚房工作台</span><small>餐點左側 · 飲料右側（2 秒）· 每種最多 4 份</small></div><div class="grid" id="grid"></div></section>
+  <div class="footer"><span>🍞 吐司／🥞 蛋餅：烤好後 5 秒內取出；🥛 飲料 2 秒完成。</span><button class="reset" id="reset">↻ 重新開店</button></div>
  </div>
-
-</header>
-
-<section class="customers">
-
- <div class="heading"><span>👥 客人訂單</span><span style="color:#9fe2a3">● 營業中</span></div>
-
- <div class="queue" id="queue"></div>
-
-</section>
-
-<div class="middle"><div class="tip" id="tip">3D 早餐廚房｜開始製作你的第一份餐點</div></div>
-
-<div class="bottom">
-
- <div class="status" id="message">🏪 開店了！請查看第一位客人的訂單。</div>
-
- <section class="workbench">
-
-  <div class="worktitle"><span>🍽️ 廚房工作台</span><small>左側餐點 · 右側飲料</small></div>
-
-  <div class="grid" id="grid"></div>
-
- </section>
-
- <div class="footer">
-
-  <span>吐司／蛋餅烤好後 5 秒內取出，放盤後不會焦。</span>
-
-  <button class="reset" id="reset">↻ 重新開店</button>
-
+</div>
+<div class="setup-overlay" id="setupOverlay">
+ <div class="setup-card">
+  <div class="setup-logo">🍳</div>
+  <h2>早餐店準備開店</h2>
+  <p class="sub">開始前先選擇難度與營業時間</p>
+  <div class="setup-field"><label>🎮 選擇遊戲難度</label>
+   <div class="setup-options">
+    <button type="button" class="pick selected" data-mode="easy">🌱 簡單<small>單一餐點・等待較久</small></button>
+    <button type="button" class="pick" data-mode="hard">🔥 困難<small>多項餐點・等待較短</small></button>
+   </div>
+  </div>
+  <div class="setup-field"><label>⏱️ 選擇營業時間</label>
+   <div class="setup-options three">
+    <button type="button" class="pick" data-duration="60">60 秒</button>
+    <button type="button" class="pick" data-duration="90">90 秒</button>
+    <button type="button" class="pick selected" data-duration="120">120 秒</button>
+   </div>
+  </div>
+  <button type="button" class="setup-start" id="startGameButton">🏪 開始營業</button>
+  <div class="setup-hint">飲料 2 秒完成｜烤箱餐點須準時取出</div>
  </div>
-
 </div>
-
-</div>
-
-<div class="overlay" id="over">
-
- <div class="modal">
-
-  <div style="font-size:42px">🌙</div>
-
-  <h2>今日打烊</h2>
-
-  <p id="result"></p>
-
-  <button id="again">再開一次店</button>
-
- </div>
-
-</div>
-
+<div class="overlay" id="over"><div class="modal"><div class="big">🌙</div><h2>今日打烊</h2><p id="result">總收入 $0，服務 0 位客人。</p><button id="again">再開一次店</button></div></div>
 <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
-
 <script>
+(()=>{'use strict';
+const FOODS=[{key:'toast',name:'烤吐司',emoji:'🍞',cook:5,price:30,grill:true,group:'food',color:0xd99a4f},{key:'pancake',name:'蛋餅',emoji:'🥞',cook:5,price:35,grill:true,group:'food',color:0xf2c65e},{key:'soymilk',name:'豆漿',emoji:'🥛',cook:2,price:20,grill:false,group:'drink',color:0xf1e0b8},{key:'milktea',name:'奶茶',emoji:'🧋',cook:2,price:25,grill:false,group:'drink',color:0x9c5a31}];
+const FACES=['👩','👨','👧','👦','👵','👴','🧑','👩‍🦰','👨‍🦱','👱‍♀️','🧔','👩‍🦳'];const MAX=4,OVEN_MS=5000;const $=id=>document.getElementById(id);
+function difficulty(){return $('difficulty').value}
+function patienceForMode(){return difficulty()==='easy'?60:28}
+function spawnInterval(){return difficulty()==='easy'?9000:5500}
+function selectedDuration(){return Number($('duration').value)||120}
+function orderText(c){return Object.entries(c.orders).filter(([k,n])=>n>0).map(([k,n])=>food(k).emoji+food(k).name+(n>1?' ×'+n:'')).join('、')}
+function orderComplete(c){return Object.values(c.orders).every(n=>n<=0)}
+let money=0,served=0,time=120,active=false,customers=[],items=[],idCounter=1,gameTimer=null,spawnTimer=null,lastTick=0;
+function food(k){return FOODS.find(f=>f.key===k)}
+function msg(s,bad=false){$('message').textContent=s;$('message').classList.toggle('bad',bad)}
+function stats(){$('money').textContent='$'+money;$('served').textContent=served;$('time').textContent=Math.ceil(time)}
+function renderQueue(){const el=$('queue');if(!customers.length){el.innerHTML='<div class="empty" style="min-width:100%">☕ 等待下一位客人⋯</div>';return}el.innerHTML=customers.map((c,i)=>{let p=Math.max(0,c.left/c.patience*100);return `<div class="customer ${i===0?'first':''}">${i===0?'<span class="firsttag">下一位</span>':''}<div class="face">${c.face}</div><div class="order">${difficulty()==='easy'?'單點':'多項訂單'}</div><div class="order" style="white-space:normal;line-height:1.45">${orderText(c)}</div><div class="patience ${p<30?'low':''}"><i style="width:${p}%;${p<30?'background:#ff6657':''}"></i></div><div class="meta">耐心 ${Math.ceil(c.left)} 秒</div></div>`}).join('')}
+function renderGrid(){ $('grid').innerHTML=FOODS.map(f=>{let arr=items.filter(x=>x.food===f.key);let html=arr.length?arr.map(x=>{let sec=d=>Math.max(0,Math.ceil((d-Date.now())/1000));if(x.state==='cooking')return `<div class="item"><div class="itemrow"><span>⏳</span><b>料理中</b><small>${sec(x.readyAt)} 秒</small></div></div>`;if(x.state==='oven')return `<div class="item"><div class="itemrow"><span>🔥</span><b>烤好了</b><small>${sec(x.ovenDeadline)} 秒</small></div><button data-take="${x.id}">取出放到盤子</button></div>`;if(x.state==='plate'||x.state==='ready')return `<div class="item ready"><div class="itemrow"><span>${x.state==='plate'?'🍽️':f.emoji}</span><b>${x.state==='plate'?'盤子上':'已完成'}</b><small>不會烤焦</small></div><button data-serve="${x.id}" ${!customers.length?'disabled':''}>送給客人</button></div>`;return `<div class="item burnt"><div class="itemrow"><span>⬛</span><b>烤焦了</b></div><button data-trash="${x.id}">丟掉重做</button></div>`}).join(''):'<div class="empty">尚未備餐</div>';return `<article class="station ${f.group==='drink'?'drink':''}" data-food="${f.key}"><div class="station-head"><span class="emoji">${f.emoji}</span><div><strong>${f.name}</strong><small>${f.cook} 秒 · 已備 ${arr.length}/${MAX}</small></div><span class="price">$${f.price}</span></div><button class="action" data-cook="${f.key}" ${!active||arr.length>=MAX?'disabled':''}>＋ 開始製作</button><div class="items">${html}</div></article>`}).join('') }
+function spawn(){if(!active||customers.length>=5)return;const mode=difficulty();const orders={};if(mode==='easy'){const f=FOODS[Math.floor(Math.random()*FOODS.length)];orders[f.key]=1}else{const total=2+Math.floor(Math.random()*3);for(let i=0;i<total;i++){const f=FOODS[Math.floor(Math.random()*FOODS.length)];orders[f.key]=(orders[f.key]||0)+1}}const patience=patienceForMode();customers.push({id:idCounter++,face:FACES[Math.floor(Math.random()*FACES.length)],orders,patience,left:patience});renderQueue()}
+function cook(k){if(!active)return;let f=food(k);if(items.filter(x=>x.food===k).length>=MAX){msg(f.name+'最多只能備餐 4 份！',true);return}items.push({id:idCounter++,food:k,state:'cooking',readyAt:Date.now()+f.cook*1000,ovenDeadline:0});msg('👨‍🍳 開始製作 '+f.name+'！');renderGrid();animateFood(k)}
+function take(id){let x=items.find(a=>a.id===id);if(!x||x.state!=='oven')return;if(Date.now()>=x.ovenDeadline){x.state='burnt';msg(food(x.food).name+'超過 5 秒沒取出，烤焦了！',true)}else{x.state='plate';msg('✅ 已放到盤子上！這份餐點不會再烤焦。');flashOven()}renderGrid()}
+function serve(id){if(!active)return;let x=items.find(a=>a.id===id),c=customers[0];if(!x)return;if(!c){msg('目前沒有客人！',true);return}if(x.state==='cooking'){msg('餐點還在製作中！',true);return}if(x.state==='oven'){msg('請先取出餐點放到盤子上！',true);return}if(x.state==='burnt'){msg('烤焦的餐點不能出餐。',true);return}if(!c.orders[x.food]||c.orders[x.food]<=0){msg('這位客人目前不需要 '+food(x.food).name+'，請看清楚訂單。',true);return}const f=food(x.food);c.orders[x.food]--;money+=f.price;items=items.filter(a=>a.id!==id);stats();if(orderComplete(c)){customers.shift();served++;stats();msg('🎉 客人的整份訂單完成！收入 +$'+f.price+'，服務人數 +1。');if(!customers.length)spawn()}else{msg('✅ 送出 '+f.name+'！這位客人還需要：'+orderText(c));showServe()}renderQueue();renderGrid()}
+function trash(id){items=items.filter(x=>x.id!==id);renderGrid();msg('已丟掉烤焦餐點，可以重新製作。')}
+function tick(){if(!active)return;let now=Date.now(),delta=Math.min((now-lastTick)/1000,1);lastTick=now;items.forEach(x=>{let f=food(x.food);if(x.state==='cooking'&&now>=x.readyAt){if(f.grill){x.state='oven';x.ovenDeadline=x.readyAt+OVEN_MS;msg(f.name+'烤好了！請在 5 秒內取出放到盤子。');flashOven()}else{x.state='ready';msg(f.name+'做好了！可以直接出餐。')}}if(x.state==='oven'&&now>=x.ovenDeadline){x.state='burnt';msg(f.name+'超過 5 秒沒取出，烤焦變黑了！',true)}});customers.forEach(c=>c.left=Math.max(0,c.left-delta));if(customers.some(c=>c.left<=0)){customers=customers.filter(c=>c.left>0);msg('😣 有客人等太久離開了！',true)}time=Math.max(0,time-delta);stats();renderQueue();renderGrid();if(time<=0)end()}
+function end(){active=false;clearInterval(gameTimer);clearInterval(spawnTimer);$('result').textContent='收入 $'+money+' · 服務 '+served+' 位客人';$('over').classList.add('show');msg('🌙 今日營業結束。')}
+function start(){clearInterval(gameTimer);clearInterval(spawnTimer);money=0;served=0;time=selectedDuration();active=true;customers=[];items=[];idCounter=1;lastTick=Date.now();$('over').classList.remove('show');stats();renderQueue();renderGrid();msg('🏪 開店了！難度：'+(difficulty()==='easy'?'簡單（單點、等待較久）':'困難（多項訂單、等待較短）')+'，遊戲時間 '+time+' 秒。');spawn();gameTimer=setInterval(tick,200);spawnTimer=setInterval(spawn,spawnInterval())}
+$('difficulty').addEventListener('change',()=>{if(active)msg('難度已選為 '+($('difficulty').value==='easy'?'簡單':'困難')+'；請按「重新開店」套用。');});$('duration').addEventListener('change',()=>{if(active)msg('遊戲時間已選為 '+selectedDuration()+' 秒；請按「重新開店」套用。');});
+$('grid').addEventListener('click',e=>{let b=e.target.closest('button');if(!b)return;if(b.dataset.cook)cook(b.dataset.cook);if(b.dataset.take)take(+b.dataset.take);if(b.dataset.serve)serve(+b.dataset.serve);if(b.dataset.trash)trash(+b.dataset.trash)});$('again').addEventListener('click',()=>{$('over').classList.remove('show');$('setupOverlay').style.display='flex'});
 
-(()=>{
-
-'use strict';
-
-const FOODS=[
-
- {key:'toast',name:'吐司',emoji:'🍞',cook:5,price:30,grill:true,drink:false,color:0xe0a34e},
-
- {key:'pancake',name:'蛋餅',emoji:'🥞',cook:5,price:35,grill:true,drink:false,color:0xf2c65e},
-
- {key:'soymilk',name:'豆漿',emoji:'🥛',cook:4,price:20,grill:false,drink:true,color:0xe9dbb9},
-
- {key:'milktea',name:'奶茶',emoji:'🧋',cook:5,price:25,grill:false,drink:true,color:0x99572f}
-
-];
-
-const FACES=['👩','👨','👧','👦','👵','👴','🧑','👩‍🦰','👨‍🦱'];
-
-const $=id=>document.getElementById(id);
-
-const MAX=4, DURATION=120, PATIENCE=35;
-
-let money=0,served=0,time=120,active=false,customers=[],items=[],nextId=1,timer=null,spawner=null,lastTick=0;
-
-const food=k=>FOODS.find(f=>f.key===k);
-
-function message(s,bad=false){$('message').textContent=s;$('message').classList.toggle('bad',bad)}
-
-function updateStats(){$('money').textContent='$'+money;$('served').textContent=served;$('time').textContent=Math.ceil(time)}
-
-function renderQueue(){
-
- const el=$('queue');
-
- if(!customers.length){el.innerHTML='<div class="empty">☕ 等待下一位客人⋯</div>';return}
-
- el.innerHTML=customers.map((c,i)=>{
-
-  const f=food(c.order),pct=Math.max(0,c.left/PATIENCE*100);
-
-  return `<div class="customer ${i===0?'first':''}">
-
-   <div class="face">${c.face}</div><div class="order">${f.emoji} ${f.name}</div>
-
-   <div class="bar"><i style="width:${pct}%;background:${pct<30?'#ff6657':'#8bd28d'}"></i></div>
-
-   <div class="meta">${i===0?'下一位':'第 '+(i+1)+' 位'} · ${Math.ceil(c.left)}秒</div>
-
-  </div>`;
-
- }).join('');
-
+// Three.js low-poly 3D scene
+let scene,camera,renderer,raycaster,mouse,clock,ovenDoor,ovenLight,steam=[],foodMeshes={},toastMesh,pancakeMesh,plateMesh,sceneReady=false;
+function mat(color,rough=.8,metal=0){return new THREE.MeshStandardMaterial({color,roughness:rough,metalness:metal})}
+function box(w,h,d,material,x,y,z,bevel=0){let geo;if(bevel){geo=new THREE.BoxGeometry(w,h,d); }else geo=new THREE.BoxGeometry(w,h,d);let m=new THREE.Mesh(geo,material);m.position.set(x,y,z);m.castShadow=true;m.receiveShadow=true;scene.add(m);return m}
+function cylinder(rt,rb,h,material,x,y,z,seg=12){let m=new THREE.Mesh(new THREE.CylinderGeometry(rt,rb,h,seg),material);m.position.set(x,y,z);m.castShadow=true;m.receiveShadow=true;scene.add(m);return m}
+function sphere(r,material,x,y,z,seg=12){let m=new THREE.Mesh(new THREE.IcosahedronGeometry(r,1),material);m.position.set(x,y,z);m.castShadow=true;scene.add(m);return m}
+function makePlate(x,z,foodColor){cylinder(.67,.72,.09,mat(0xf0e8d7,.3),x,.19,z,24);cylinder(.53,.55,.025,mat(0xffffff,.25),x,.245,z,24);let food=cylinder(.39,.43,.055,mat(foodColor,.75),x,.29,z,18);food.scale.set(1,.7,1);return food}
+function makeCup(x,z,color,bubble=false){let cup=cylinder(.22,.28,.57,mat(color,.25),x,.51,z,12);let lid=cylinder(.25,.25,.055,mat(0xf2eee5,.25),x,.82,z,12);cylinder(.035,.035,.22,mat(0x33251b),x+.05,.94,z,8);if(bubble){for(let i=0;i<7;i++)sphere(.035,mat(0x24150f),x-.14+(i%4)*.08,.28,z-.08+Math.floor(i/4)*.09,6)}return cup}
+function init3D(){if(!window.THREE){$('sceneTip').textContent='3D 場景暫時無法載入；下方餐點工作台仍可正常遊玩，請確認網路後重新整理。';return}const host=$('scene');scene=new THREE.Scene();scene.background=new THREE.Color(0x39291c);scene.fog=new THREE.Fog(0x39291c,12,24);camera=new THREE.PerspectiveCamera(43,innerWidth/innerHeight,.1,100);camera.position.set(0,10.5,11.8);camera.lookAt(0,0,0);renderer=new THREE.WebGLRenderer({antialias:true,alpha:false});renderer.setPixelRatio(Math.min(devicePixelRatio,1.7));renderer.setSize(innerWidth,innerHeight);renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.2;host.appendChild(renderer.domElement);scene.add(new THREE.HemisphereLight(0xffe3bb,0x3c3026,2.2));let sun=new THREE.DirectionalLight(0xffd6a1,3.4);sun.position.set(-4,9,6);sun.castShadow=true;sun.shadow.mapSize.set(1024,1024);scene.add(sun);let fill=new THREE.PointLight(0xffa74e,28,12);fill.position.set(3,4,-2);scene.add(fill);raycaster=new THREE.Raycaster();mouse=new THREE.Vector2();clock=new THREE.Clock();buildScene();sceneReady=true;animate();addEventListener('resize',resize);renderer.domElement.addEventListener('pointerdown',onSceneClick)}
+function buildScene(){const wood=mat(0x8b5731),woodLight=mat(0xb47a45),darkWood=mat(0x4a2d1c),iron=mat(0x282b2c,.35,.65),steel=mat(0x899093,.28,.7),cream=mat(0xe9d8b8),red=mat(0x8c3426),green=mat(0x385a45);box(15,.3,15,mat(0x38271b),0,-.35,0);box(11,.18,8,wood,0,0,0);for(let i=0;i<17;i++)box(10.8,.015,.025,woodLight,0,.1,-3.7+i*.45);box(11,.5,.25,darkWood,0,-.25,4);box(11,.4,.25,darkWood,0,-.25,-4);box(10.8,.2,1.1,green,0,-.45,-3.6);for(let i=0;i<12;i++)box(.025,.32,.04,mat(0x6d9271),-5+i*.91,-.43,-3.02);
+// backsplash / cafe wall and windows
+box(10,.05,.1,cream,0,1.1,-3.8);for(let x=-4.8;x<=4.8;x+=2.4){box(.055,1.3,.08,mat(0x47382b),x,1.6,-3.7)}box(10,.05,.08,woodLight,0,2.28,-3.7);box(10,.05,.08,woodLight,0,.98,-3.7);for(let x=-4.5;x<4.5;x+=.9){box(.04,.65,.04,mat(0xc1d5d0),x,1.6,-3.65)}
+// wall shelf & jars
+box(4,.12,.45,woodLight,-3.1,2.05,-3.1);for(let i=0;i<5;i++){cylinder(.12,.12,.28,[mat(0x7892a0),mat(0xd7a456),mat(0x9b6440)][i%3],-4.5+i*.65,2.25,-3.05,10)}
+// oven at left
+box(2.05,1.15,1.45,mat(0xb5b9b5,.35,.5),-3.05,.77,-1.3);box(1.68,.68,.12,iron,-3.05,.65,-.54);box(1.5,.48,.035,mat(0x40251b),-3.05,.66,-.465);box(1.36,.06,.05,steel,-3.05,.98,-.44);for(let i=0;i<2;i++){box(.48,.07,.04,mat(0xe9a34f),-3.38+i*.65,.55,-.42)}for(let i=0;i<2;i++){box(.48,.04,.42,mat(0x3b3026),-3.35+i*.65,.45,-.12);let bread=box(.35,.08,.29,mat(0xe4a44c),-3.35+i*.65,.52,-.12);bread.rotation.y=.08}
+for(let i=0;i<2;i++)cylinder(.09,.09,.08,steel,-2.25,.85,-.5,12);
+// frying pan and egg pancake centre
+cylinder(1.05,1.12,.16,iron,0,.27,-.25,24);cylinder(.94,.98,.055,mat(0x494d4c,.3,.45),0,.37,-.25,24);let panHandle=box(.17,.11,1.15,iron,0,.3,.92);panHandle.rotation.x=-.08;box(.2,.14,.35,mat(0x634027),0,.3,1.48);pancakeMesh=cylinder(.75,.8,.09,mat(0xf2c85e),0,.43,-.25,20);for(let i=0;i<11;i++){let dot=sphere(.045,mat(0xfbe59a),Math.cos(i*2.4)*(.2+(i%3)*.12),.49,-.25+Math.sin(i*2.4)*(.2+(i%3)*.12),6);dot.scale.set(1,.25,1)}
+// plates with toast and egg pancake
+plateMesh=makePlate(2.0,-1.4,0xf1c45d);let toast=box(.67,.11,.65,mat(0xe3ad64),1.98,.34,-2.4);box(.56,.025,.53,mat(0xf6d99c),1.98,.41,-2.4);let egg=cylinder(.36,.38,.055,mat(0xf3c85e),2.05,.35,-.42,18);sphere(.13,mat(0xf8e9b0),2.05,.41,-.42,10);
+// drink machines and cups right rear
+for(let i=0;i<3;i++){let x=1.55+i*.92;box(.7,.78,.65,mat([0x8aa7a6,0x9fb8b5,0x6f9694][i],.3,.35),x,.62,-2.9);box(.5,.12,.48,steel,x,1.05,-2.9);cylinder(.22,.24,.05,iron,x,.21,-2.9,16);makeCup(x,-2.9,i===1?0xb36e3c:0xe3d1a7,i===1)}
+// cutting board and egg rolls front left
+box(2.5,.13,1.2,woodLight,-3, .23,1.8);box(2.15,.025,.88,mat(0xd6ad72),-3,.31,1.8);for(let i=0;i<3;i++){let roll=cylinder(.16,.16,.75,mat(0xf1d18a),-3.5+i*.48,.44,1.75,12);roll.rotation.z=Math.PI/2;for(let j=0;j<3;j++)sphere(.025,mat(0x5e8b42),-3.5+i*.48-.2+j*.16,.52,1.75,5)}
+// tea dispenser on right front
+box(1.35,.18,1.1,woodLight,3, .18,1.8);cylinder(.32,.35,.7,mat(0x9c6236,.25),3,.61,1.8,16);cylinder(.35,.35,.07,steel,3,.98,1.8,16);cylinder(.055,.055,.32,iron,3.05,1.15,1.8,8);makeCup(2.25,1.4,0x9d6038,true);makeCup(3.7,1.4,0xe9dfc9,false);
+// countertop jars, garnish and plants
+for(let i=0;i<5;i++){cylinder(.1,.13,.2,mat([0x6c8d49,0xd2a448,0xb14e37][i%3]),-4.7+i*.38,.35,2.7,8)}
+for(let i=0;i<3;i++){cylinder(.17,.17,.3,mat(0xddd2b6,.25),4.3,.4,-1.7+i*.65,12);cylinder(.13,.13,.04,mat(0x7d5031),4.3,.57,-1.7+i*.65,12)}
+// hanging warm lights
+for(let x of [-3,0,3]){cylinder(.025,.025,.75,darkWood,x,3,-2.8,8);sphere(.17,mat(0xffd17b,.2),x,2.6,-2.8,10)}
+// stool-like customer side and floor tiles
+for(let i=0;i<7;i++){box(.45,.07,.45,woodLight,-4.4+i*1.45,-.12,4.5);cylinder(.045,.045,.4,iron,-4.4+i*1.45,-.35,4.5,8)}
+// decorative low-poly plant
+cylinder(.23,.3,.4,mat(0xd18b52),4.65,.32,-3.1,10);for(let i=0;i<7;i++){let leaf=sphere(.16,mat(i%2?0x4e8051:0x6c9a5b),4.65+Math.cos(i*2.3)*.23,.7+(i%3)*.12,-3.1+Math.sin(i*2.3)*.22,5);leaf.scale.set(.65,1.6,.55)}
+// floating low-poly coins on back wall as decor
+for(let i=0;i<3;i++){let coin=cylinder(.12,.12,.035,mat(0xf1bd58,.3,.4),-4.2+i*.35,1.55,-3.45,10);coin.rotation.x=Math.PI/2}
+// low poly floor backdrop
+box(16,.12,16,mat(0x6e4a2d),0,-.62,0);
 }
-
-function renderGrid(){
-
- $('grid').innerHTML=FOODS.map(f=>{
-
-  const list=items.filter(x=>x.food===f.key);
-
-  const rows=list.length?list.map(x=>{
-
-   const seconds=deadline=>Math.max(0,Math.ceil((deadline-Date.now())/1000));
-
-   if(x.state==='cooking')return `<div class="item"><b>⏳ ${f.name}製作中</b><div>剩餘 ${seconds(x.readyAt)} 秒</div></div>`;
-
-   if(x.state==='oven')return `<div class="item"><b>🔥 烤好了！</b><div>取出倒數 ${seconds(x.deadline)} 秒</div><button data-take="${x.id}">取出放到盤子</button></div>`;
-
-   if(x.state==='plate')return `<div class="item ready"><b>🍽️ 已放到盤子</b><div>安全保存，不會烤焦</div><button data-serve="${x.id}" ${!customers.length?'disabled':''}>送給客人</button></div>`;
-
-   if(x.state==='ready')return `<div class="item ready"><b>${f.emoji} 已完成</b><div>不會烤焦</div><button data-serve="${x.id}" ${!customers.length?'disabled':''}>送給客人</button></div>`;
-
-   return `<div class="item burnt"><b>⬛ 餐點烤焦了</b><button data-trash="${x.id}">丟掉重做</button></div>`;
-
-  }).join(''):'<div class="empty">尚未備餐</div>';
-
-  return `<div class="station ${f.drink?'drink':''}">
-
-   <h3>${f.emoji} ${f.name}　$${f.price}</h3>
-
-   <p>製作 ${f.cook} 秒 · 已備 ${list.length}/${MAX}</p>
-
-   <button data-cook="${f.key}" ${!active||list.length>=MAX?'disabled':''}>＋ 開始製作</button>
-
-   <div class="items">${rows}</div>
-
-  </div>`;
-
- }).join('');
-
-}
-
-function spawn(){
-
- if(!active||customers.length>=5)return;
-
- const f=FOODS[Math.floor(Math.random()*FOODS.length)];
-
- customers.push({id:nextId++,face:FACES[Math.floor(Math.random()*FACES.length)],order:f.key,left:PATIENCE});
-
- renderQueue();
-
-}
-
-function cook(key){
-
- if(!active)return;
-
- const f=food(key);
-
- if(items.filter(x=>x.food===key).length>=MAX){message(f.name+'最多只能備餐 4 份！',true);return}
-
- const now=Date.now();
-
- items.push({id:nextId++,food:key,state:'cooking',readyAt:now+f.cook*1000,deadline:0});
-
- message('👨‍🍳 開始製作 '+f.name+'！');
-
- renderGrid();
-
-}
-
-function take(id){
-
- const x=items.find(x=>x.id===id);
-
- if(!x||x.state!=='oven')return;
-
- if(Date.now()>=x.deadline){x.state='burnt';message(food(x.food).name+'超時烤焦了！',true)}
-
- else{x.state='plate';message('🍽️ 已放到盤子上！之後不會再烤焦。')}
-
- renderGrid();
-
-}
-
-function serve(id){
-
- if(!active)return;
-
- const x=items.find(x=>x.id===id),c=customers[0];
-
- if(!x)return;
-
- if(!c){message('目前沒有客人。',true);return}
-
- if(x.state==='cooking'){message('餐點還在製作中！',true);return}
-
- if(x.state==='oven'){message('請先取出放到盤子！',true);return}
-
- if(x.state==='burnt'){message('烤焦餐點不能出餐。',true);return}
-
- if(x.food!==c.order){message('下一位客人要的是 '+food(c.order).name+'！',true);return}
-
- const f=food(x.food);
-
- items=items.filter(a=>a.id!==id);customers.shift();money+=f.price;served++;
-
- updateStats();message('✅ 成功送出 '+f.name+'，收入 +$'+f.price+'！');
-
- renderQueue();renderGrid();if(!customers.length)spawn();
-
-}
-
-function trash(id){items=items.filter(x=>x.id!==id);renderGrid();message('已丟掉烤焦餐點。')}
-
-function tick(){
-
- if(!active)return;
-
- const now=Date.now(),delta=Math.min((now-lastTick)/1000,1);lastTick=now;
-
- items.forEach(x=>{
-
-  const f=food(x.food);
-
-  if(x.state==='cooking'&&now>=x.readyAt){
-
-   if(f.grill){x.state='oven';x.deadline=x.readyAt+5000;message(f.name+'烤好了！5 秒內取出放盤。')}
-
-   else{x.state='ready';message(f.name+'做好了，可以直接出餐。')}
-
-  }
-
-  if(x.state==='oven'&&now>=x.deadline){x.state='burnt';message(f.name+'超過 5 秒沒取出，烤焦了！',true)}
-
- });
-
- customers.forEach(c=>c.left=Math.max(0,c.left-delta));
-
- if(customers.some(c=>c.left<=0)){customers=customers.filter(c=>c.left>0);message('😣 有客人等太久離開了！',true)}
-
- time=Math.max(0,time-delta);updateStats();renderQueue();renderGrid();
-
- if(time<=0)endGame();
-
-}
-
-function endGame(){
-
- active=false;clearInterval(timer);clearInterval(spawner);
-
- $('result').textContent='總收入 $'+money+'，服務 '+served+' 位客人。';
-
- $('over').classList.add('show');
-
-}
-
-function start(){
-
- clearInterval(timer);clearInterval(spawner);
-
- money=0;served=0;time=DURATION;active=true;customers=[];items=[];nextId=1;lastTick=Date.now();
-
- $('over').classList.remove('show');updateStats();renderGrid();spawn();
-
- message('🏪 開店了！請查看第一位客人的訂單。');
-
- timer=setInterval(tick,200);spawner=setInterval(spawn,6500);
-
-}
-
-$('grid').addEventListener('click',e=>{
-
- const b=e.target.closest('button');if(!b)return;
-
- if(b.dataset.cook)cook(b.dataset.cook);
-
- if(b.dataset.take)take(+b.dataset.take);
-
- if(b.dataset.serve)serve(+b.dataset.serve);
-
- if(b.dataset.trash)trash(+b.dataset.trash);
-
-});
-
-$('reset').addEventListener('click',start);
-
-$('again').addEventListener('click',start);
-
-// Three.js 低多邊形早餐廚房
-
-let scene,camera,renderer,clock;
-
-function material(color,roughness=.8,metalness=0){
-
- return new THREE.MeshStandardMaterial({color,roughness,metalness});
-
-}
-
-function box(w,h,d,color,x,y,z,rough=.8){
-
- const m=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),material(color,rough));
-
- m.position.set(x,y,z);m.castShadow=true;m.receiveShadow=true;scene.add(m);return m;
-
-}
-
-function cyl(rt,rb,h,color,x,y,z,segments=16){
-
- const m=new THREE.Mesh(new THREE.CylinderGeometry(rt,rb,h,segments),material(color,.45,.25));
-
- m.position.set(x,y,z);m.castShadow=true;m.receiveShadow=true;scene.add(m);return m;
-
-}
-
-function sphere(r,color,x,y,z,segments=10){
-
- const m=new THREE.Mesh(new THREE.IcosahedronGeometry(r,1),material(color));
-
- m.position.set(x,y,z);m.castShadow=true;scene.add(m);return m;
-
-}
-
-function createScene(){
-
- if(!window.THREE){$('tip').textContent='3D 載入失敗，請確認網路後重新整理。';return}
-
- const host=$('scene');
-
- scene=new THREE.Scene();scene.background=new THREE.Color(0x9fc7d6);scene.fog=new THREE.Fog(0x9fc7d6,14,28);
-
- camera=new THREE.PerspectiveCamera(43,innerWidth/innerHeight,.1,100);
-
- camera.position.set(0,10.5,13);camera.lookAt(0,0,0);
-
- renderer=new THREE.WebGLRenderer({antialias:true,alpha:false});
-
- renderer.setPixelRatio(Math.min(devicePixelRatio,1.5));renderer.setSize(innerWidth,innerHeight);
-
- renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;
-
- renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping;
-
- renderer.toneMappingExposure=1.15;host.appendChild(renderer.domElement);
-
- scene.add(new THREE.HemisphereLight(0xffe8c8,0x4b5b60,2.3));
-
- const sun=new THREE.DirectionalLight(0xffd5a0,3.1);sun.position.set(-5,10,7);sun.castShadow=true;scene.add(sun);
-
- const fill=new THREE.PointLight(0xffa64e,18,18);fill.position.set(3,5,-2);scene.add(fill);
-
- buildKitchen();clock=new THREE.Clock();animate();
-
- addEventListener('resize',resize);
-
-}
-
-function buildKitchen(){
-
- const wood=0x986239,lightWood=0xb78049,dark=0x332a26,steel=0x9ca9a9;
-
- box(20,.3,20,0x5b422d,0,-.65,0);
-
- box(11,.35,8,wood,0,-.12,0);
-
- for(let i=0;i<18;i++)box(10.9,.015,.035,lightWood,0,.065,-3.8+i*.44);
-
- // café backsplash and windows
-
- box(11,2.7,.18,0x527a70,0,1.1,-3.9);
-
- box(11,.16,.2,lightWood,0,2.5,-3.75);
-
- for(let x=-4.8;x<=4.8;x+=2.4)box(.07,2.4,.12,0xe1c99d,x,1.2,-3.7);
-
- for(let x=-4.8;x<=4.8;x+=.8)box(.025,2.2,.13,0xb4d4d4,x,1.2,-3.65);
-
- // oven on left
-
- box(2.3,1.35,1.55,0xc2c7c4,-3.25,.75,-1.25,.35);
-
- box(1.9,.75,.1,0x303438,-3.25,.65,-.44,.35);
-
- box(1.65,.53,.04,0x5c2f19,-3.25,.66,-.37,.3);
-
- box(1.45,.06,.05,0xffb354,-3.25,.95,-.34,.3);
-
- for(let i=0;i<2;i++)box(.53,.08,.4,0x6c4b2c,-3.65+i*.8,.45,-.05);
-
- for(let i=0;i<2;i++)box(.4,.1,.32,0xe6a84e,-3.65+i*.8,.53,-.05);
-
- for(let i=0;i<2;i++)cyl(.09,.09,.09,0x3d4546,-2.2,.83,-.4,12);
-
- // pan in center
-
- cyl(1.2,1.3,.18,0x262b30,0,.27,-.1,24);
-
- cyl(1.08,1.12,.07,0x4b4e4d,0,.39,-.1,24);
-
- cyl(.78,.82,.1,0xe9bd53,0,.46,-.1,20);
-
- sphere(.18,0xffe8a1,0,.54,-.1,12);
-
- const handle=box(.2,.12,1.2,0x292c2e,0,.3,1.15);handle.rotation.x=-.08;
-
- box(.22,.14,.35,0x704729,0,.3,1.78);
-
- // toast and plates
-
- cyl(.65,.69,.08,0xf3eadb,2.1,.19,-1.6,24);
-
- box(.75,.13,.65,0xd79a4d,2.1,.31,-1.6);
-
- box(.62,.025,.52,0xf4d7a0,2.1,.39,-1.6);
-
- cyl(.55,.6,.07,0xf3eadb,2.2,.19,-.2,24);
-
- cyl(.38,.4,.06,0xf1c65b,2.2,.25,-.2,20);
-
- sphere(.12,0xffe6a2,2.2,.31,-.2,10);
-
- // drink machines, cups
-
- for(let i=0;i<3;i++){
-
-  const x=1.5+i*.95;
-
-  box(.72,.82,.7,[0x8aa9a7,0xa8c1b9,0x789b9a][i],x,.57,-3, .3);
-
-  box(.55,.12,.52,steel,x,1.04,-3,.3);
-
-  cyl(.23,.24,.06,0x3a4141,x,.17,-3,16);
-
- }
-
- function cup(x,z,color,bubble){
-
-  cyl(.25,.31,.55,color,x,.48,z,12);
-
-  cyl(.27,.27,.06,0xf1e8d5,x,.78,z,12);
-
-  cyl(.035,.035,.22,0x35271d,x+.05,.91,z,8);
-
-  if(bubble)for(let i=0;i<7;i++)sphere(.035,0x24150f,x-.14+(i%4)*.08,.23,z+(Math.floor(i/4))*.08,6);
-
- }
-
- cup(1.5,-1.9,0xe6d6b8,false);cup(2.45,-1.9,0x9b5b34,true);cup(3.4,-1.9,0xe4d4b2,false);
-
- // egg roll cutting board
-
- box(2.5,.13,1.2,lightWood,-3,.22,1.8);
-
- box(2.15,.025,.88,0xd9b47d,-3,.3,1.8);
-
- for(let i=0;i<3;i++){
-
-  const roll=cyl(.16,.16,.75,0xf1d18a,-3.55+i*.48,.43,1.8,12);roll.rotation.z=Math.PI/2;
-
-  for(let j=0;j<3;j++)sphere(.025,0x638b45,-3.55+i*.48-.2+j*.16,.51,1.8,5);
-
- }
-
- // tea counter
-
- box(1.35,.16,1.1,lightWood,3,.18,1.8);
-
- cyl(.32,.35,.7,0x995a34,3,.59,1.8,16);
-
- cyl(.35,.35,.07,steel,3,.96,1.8,16);
-
- cyl(.05,.05,.3,0x292929,3.05,1.14,1.8,8);
-
- // garnish bowls and plants
-
- for(let i=0;i<5;i++)cyl(.1,.12,.18,[0x6d9149,0xd5a447,0xb44c38][i%3],-4.5+i*.38,.33,2.7,8);
-
- cyl(.23,.28,.35,0xc48b53,4.55,.28,-3.1,10);
-
- for(let i=0;i<7;i++){
-
-  const leaf=sphere(.16,i%2?0x4e8051:0x79a25c,4.55+Math.cos(i*2.3)*.23,.67+(i%3)*.1,-3.1+Math.sin(i*2.3)*.22,5);
-
-  leaf.scale.set(.65,1.5,.55);
-
- }
-
- // hanging lights
-
- for(const x of [-3,0,3]){
-
-  cyl(.025,.025,.65,0x4a3020,x,2.8,-2.7,8);
-
-  sphere(.17,0xffd17b,x,2.43,-2.7,10);
-
- }
-
-}
-
-function animate(){requestAnimationFrame(animate);if(renderer&&scene){const t=clock.getElapsedTime();renderer.render(scene,camera)}}
-
-function resize(){if(!camera||!renderer)return;camera.aspect=innerWidth/innerHeight;camera.fov=innerWidth<600?52:43;camera.position.set(0,innerWidth<600?12.5:10.5,innerWidth<600?15:13);camera.lookAt(0,0,0);camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight)}
-
-try{createScene()}catch(err){console.error(err);$('tip').textContent='3D 場景載入失敗，請重新整理。'}
-
-start();
-
+function animate(){requestAnimationFrame(animate);if(!renderer||!sceneReady)return;let t=clock.getElapsedTime();if(pancakeMesh)pancakeMesh.rotation.y=Math.sin(t*.45)*.012;renderer.render(scene,camera)}
+function resize(){if(!camera||!renderer)return;camera.aspect=innerWidth/innerHeight;camera.position.y=innerWidth<600?11.7:10.3;camera.position.z=innerWidth<600?12.7:11.2;camera.lookAt(0,.2,0);camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight)}
+function onSceneClick(e){if(!sceneReady)return;const rect=renderer.domElement.getBoundingClientRect();mouse.x=((e.clientX-rect.left)/rect.width)*2-1;mouse.y=-((e.clientY-rect.top)/rect.height)*2+1;raycaster.setFromCamera(mouse,camera);const hits=raycaster.intersectObjects(scene.children,true);if(hits.length){const obj=hits[0].object;if(obj===pancakeMesh){$('sceneTip').textContent='🥞 蛋餅正在平底鍋中！請用下方按鈕開始或管理備餐。'}else if(obj===plateMesh){$('sceneTip').textContent='🍽️ 餐盤區：放上盤子後的餐點不會再烤焦。'}else{$('sceneTip').textContent='✨ 3D 早餐廚房 · 使用下方工作台操作餐點。'}}}
+function flashOven(){$('sceneTip').textContent='🔥 烤箱完成！請在 5 秒內取出，放到盤子後就安全了。'}function animateFood(k){$('sceneTip').textContent='👨‍🍳 正在製作 '+food(k).name+'，完成後記得取出。'}
+let chosenMode='easy',chosenDuration=120;
+function syncSetupToControls(){ $('difficulty').value=chosenMode; $('duration').value=String(chosenDuration); }
+document.querySelectorAll('[data-mode]').forEach(btn=>btn.addEventListener('click',()=>{chosenMode=btn.dataset.mode;document.querySelectorAll('[data-mode]').forEach(b=>b.classList.toggle('selected',b===btn));syncSetupToControls()}));
+document.querySelectorAll('[data-duration]').forEach(btn=>btn.addEventListener('click',()=>{chosenDuration=Number(btn.dataset.duration);document.querySelectorAll('[data-duration]').forEach(b=>b.classList.toggle('selected',b===btn));syncSetupToControls()}));
+$('startGameButton').addEventListener('click',()=>{syncSetupToControls();$('setupOverlay').style.display='none';start()});
+$('reset').addEventListener('click',()=>{$('setupOverlay').style.display='flex'});
+try{init3D()}catch(e){console.error(e);$('sceneTip').textContent='3D 場景初始化失敗。請使用可執行 WebGL 的瀏覽器開啟。'}
+// 第一次開啟先顯示設定畫面，使用者按「開始營業」後才開始計時。
 })();
-
 </script>
-
 </body>
-
 </html>
